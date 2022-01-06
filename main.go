@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"log"
+	"os"
 
 	"github.com/joho/godotenv"
 )
@@ -13,5 +13,12 @@ func main() {
 		log.Fatal("Problem loading the .env file.")
 	}
 
-	fmt.Println("Hello OFN Cult")
+	app := App{}
+	app.Initialize(
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB"),
+	)
+
+	app.Run(":8010")
 }
