@@ -1,0 +1,36 @@
+{
+  "name": "fms",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node-dev --respawn --pretty --transpile-only src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OutdoorFunNetwork/fms.git"
+  },
+  "author": "Eric Miller",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OutdoorFunNetwork/fms/issues"
+  },
+  "homepage": "https://github.com/OutdoorFunNetwork/fms#readme",
+  "devDependencies": {
+    "@types/cors": "^2.8.12",
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.13",
+    "@types/helmet": "^4.0.0",
+    "@types/node": "^17.0.8",
+    "@types/pg": "^8.6.3",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.5.4"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.2",
+    "helmet": "^5.0.1",
+    "pg": "^8.7.1"
+  }
+}
