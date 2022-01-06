@@ -11,6 +11,4 @@ const pool = new Pool({
     port: 5438
 });
 
-console.log(process.env);
-
 export default pool;

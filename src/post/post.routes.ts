@@ -21,14 +21,14 @@ PostsRouter.get('/:id', async (req: Request, res: Response) => {
     const id: number = parseInt(req.params.id);
 
     try {
-        const post: Post = await PostService.findById(id);
+        const post: QueryResult<Post> = await PostService.findById(id);
 
         if (post) {
-            return res.send(200).send(post);
+            return res.status(200).send(post);
         }
 
-        res.send(404).send("Not found.");
+        res.status(404).send("Not found.");
     } catch (e: any) {
-        res.send(500).send(e.message);
+        res.status(500).send(e.message);
     }
 });
