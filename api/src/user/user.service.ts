@@ -1,5 +1,5 @@
 import pool from '../db'
-import ValidationError from '../_core/middleware/errors/ValidationError';
+import ValidationError from '../_core/errors/ValidationError';
 import { User } from './user.model';
 
 export const StartCreateUser = async (email: string): Promise<User> => {
