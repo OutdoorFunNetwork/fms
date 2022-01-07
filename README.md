@@ -4,11 +4,17 @@
 
 - [Docker](https://www.docker.com/)
 
+## The App
+
+To run the CMS / API:
+
+`docker-compose up --renew-anon-volumes --force-recreate`
+
+### App Urls:
+- [Front-end](http://localhost:3000)
+- [Backend](http://localhost:8181)
+
 ## Database
-
-To run postgres:
-
-`docker-compose up --renew-anon-volumes`
 
 To get into postgres:
 
@@ -17,6 +23,15 @@ To get into postgres:
 
 If you haven't used postgres before it's tad different than MySQL, here are [some commands](https://www.postgresqltutorial.com/psql-commands/)
 
+
+## Shutdown
+
 When you're done using the API or postgres just run:
 
 `docker-compose down`
+
+
+## Tutorials used to get going:
+
+- https://auth0.com/blog/node-js-and-typescript-tutorial-build-a-crud-api/#Model-Data-with-TypeScript-Interfaces
+- https://auth0.com/blog/node-js-and-typescript-tutorial-secure-an-express-api/

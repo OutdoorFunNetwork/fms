@@ -1,0 +1,10 @@
+FROM node
+
+RUN mkdir -p /usr/src/app
+
+WORKDIR /usr/src/app
+
+EXPOSE 8181
+
+# You can change this
+CMD npm start

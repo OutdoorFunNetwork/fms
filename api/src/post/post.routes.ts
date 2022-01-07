@@ -1,3 +1,4 @@
+import { checkJwt } from './../middleware/authz.middleware';
 import express, { Request, Response } from 'express';
 import { Post } from './post.model';
 import * as PostService from './post.service';
@@ -32,3 +33,8 @@ PostsRouter.get('/:id', async (req: Request, res: Response) => {
         res.status(500).send(e.message);
     }
 });
+
+// Any route past this point will need to be authenticated to access.
+PostsRouter.use(checkJwt);
+
+// Place protected routes here!
