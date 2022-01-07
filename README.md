@@ -19,7 +19,7 @@ To run the CMS / API:
 To get into postgres:
 
 1. `docker exec -it fms_db /bin/bash`
-2. psql fms -U fms_user
+2. `psql fms -U fms_user`
 
 If you haven't used postgres before it's tad different than MySQL, here are [some commands](https://www.postgresqltutorial.com/psql-commands/)
 

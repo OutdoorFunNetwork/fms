@@ -5,8 +5,12 @@ export interface BaseUser {
     avatar?: string;
     bio?: string;
     primaryActivity?: string;
+    active: boolean;
+    created_at: Date;
+    updated_at: Date;
 }
 
 export interface User extends BaseUser {
     id: number;
+    password: string;
 }
