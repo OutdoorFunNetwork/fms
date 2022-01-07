@@ -1,7 +1,7 @@
 create table users (
   uid SERIAL,
   display_name TEXT,
-  email TEXT NOT NULL,
+  email TEXT UNIQUE NOT NULL,
   location TEXT,
   avatar TEXT,
   bio TEXT,
@@ -11,13 +11,13 @@ create table users (
 
 create table categories (
   uid SERIAL,
-  name TEXT NOT NULL,
+  name TEXT UNIQUE NOT NULL,
   CONSTRAINT categories_pkey PRIMARY KEY (uid)
 );
 
 create table posts (
   uid SERIAL,
-  slug TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
   title TEXT NOT NULL,
   body TEXT,
   author_id INT NOT NULL,

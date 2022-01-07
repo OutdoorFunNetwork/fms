@@ -9,9 +9,9 @@ export const PostsRouter = express.Router();
 
 PostsRouter.get('/', async (req: Request, res: Response) => {
     try {
-        const posts: QueryResult<Post[]> = await PostService.findAll();
+        const posts: Post[] = await PostService.findAll();
 
-        res.status(200).send(posts.rows);
+        res.status(200).send(posts);
     } catch (e: any) {
         res.status(500).send(e.message);
     }
@@ -21,7 +21,7 @@ PostsRouter.get('/:id', async (req: Request, res: Response) => {
     const id: number = parseInt(req.params.id);
 
     try {
-        const post: QueryResult<Post> = await PostService.findById(id);
+        const post: Post = await PostService.findById(id);
 
         if (post) {
             return res.status(200).send(post);
