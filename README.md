@@ -8,6 +8,8 @@
 
 To run the CMS / API:
 
+I haven't found a better way to install the dependencies yet so for now you must cd into `ui` and `api` and `npm install` manually before running the docker command.
+
 `docker-compose up --renew-anon-volumes --force-recreate`
 
 ### App Urls:

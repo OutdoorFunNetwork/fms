@@ -59,7 +59,8 @@ CREATE TRIGGER set_timestamp BEFORE UPDATE ON posts_categories EXECUTE PROCEDURE
 
 create table user_tokens (
   token TEXT UNIQUE NOT NULL,
-  user_id INT,
+  user_id INT REFERENCES users ON DELETE CASCADE,
+  expires_at TIMESTAMPTZ NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   PRIMARY KEY (user_id),

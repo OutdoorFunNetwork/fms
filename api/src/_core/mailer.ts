@@ -19,7 +19,7 @@ export const SendMail = async (
 
   const main = {
     from: `"OFN" <outdoorfunnetwork@gmail.com>`,
-    to: email,
+    to: (process.env.ENV === 'dev') ? process.env.DEV_EMAIL : email,
     subject,
     html: body,
   };
