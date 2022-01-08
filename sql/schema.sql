@@ -38,7 +38,7 @@ create table posts (
   slug TEXT UNIQUE NOT NULL,
   title TEXT NOT NULL,
   body TEXT,
-  author_id INT NOT NULL ON DELETE CASCADE,
+  author_id INT NOT NULL REFERENCES users ON DELETE CASCADE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   CONSTRAINT posts_pkey PRIMARY KEY (uid),
@@ -47,8 +47,8 @@ create table posts (
 CREATE TRIGGER set_timestamp BEFORE UPDATE ON posts EXECUTE PROCEDURE trigger_set_timestamp();
 
 create table posts_categories (
-  post_id INT ON DELETE CASCADE,
-  category_id INT ON DELETE CASCADE,
+  post_id INT REFERENCES posts ON DELETE CASCADE,
+  category_id INT REFERENCES categories ON DELETE CASCADE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   PRIMARY KEY (post_id, category_id),
