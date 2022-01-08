@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import validator from 'validator';
+import ValidationError from '../_core/errors/ValidationError';
 import { SendMail } from '../_core/mailer';
 
 import * as UserService from './user.service';
@@ -84,6 +85,57 @@ UserRoutes.post('/verify-token', async (req: Request, res: Response) => {
 });
 
 UserRoutes.patch(`/finish/:id`, async (req: Request, res: Response) => {
+  /*
+    email: string;
+    displayName?: string;
+    location?: string;
+    avatar?: string;
+    bio?: string;
+    primaryActivity?: string;
+    active: boolean;
+  */
+
+  const {
+    displayName,
+    location,
+    avatar,
+    bio,
+    primaryActivity,
+    password,
+    password_confirmation
+  } = req.body;
+
+  if (!password || !password_confirmation) {
+    return res.status(400).send({
+      message: 'Missing passwords!'
+    })
+  }
+
+  if (
+    validator.isEmpty(password) || validator.isEmpty(password_confirmation)
+  ) {
+    return res.status(400).send({
+      message: 'Password or confirm password is empty!'
+    });
+  }
+
+  // minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1
+  if (
+    !validator.isStrongPassword(password)
+  ) {
+    return res.status(400).send({
+      message: 'Password must contain at least 8 characters, 1 uppercase, 1 lowercase, 1 number, and 1 symbol!'
+    });
+  }
+
+  if (
+    password !== password_confirmation
+  ) {
+    return res.status(400).send({
+      message: 'Passwords do not match!'
+    });
+  }
+
   return res.status(200).send({
     status: 200,
     message: 'User finished setting up profile!'
