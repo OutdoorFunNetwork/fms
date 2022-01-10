@@ -1,5 +1,4 @@
 import express, { Request, Response } from 'express';
-import validator from 'validator';
 
 import {
   SendMail,
@@ -36,52 +35,7 @@ UserRoutes.post('/', VerifyEmail, async (req: Request, res: Response) => {
   });
 });
 
-UserRoutes.post('/verify-token', async (req: Request, res: Response) => {
-  const {
-    email,
-    token,
-  } = req.body;
-
-  if (
-    !email
-    || (
-      validator.isEmpty(email)
-      || !validator.isEmail(email)
-    )
-    || !token || (validator.isEmpty(token))
-  ) {
-    return res.status(400).send({
-      message: 'There was a problem with the email or the token.',
-    });
-  }
-
-  let user;
-  let tokenQ;
-
-  try {
-    user = await UserService.getUserByEmail(email, true);
-    tokenQ = await UserService.VerifyToken(user.id, token);
-  } catch (e: any) {
-    return res.status(400).send({ message: e.message });
-  }
-
-  if (tokenQ) {
-    return res.send(200);
-  }
-
-  res.status(400).send({ message: false });
-});
-
 UserRoutes.patch('/finish/:id', VerifyTokenMiddleware, VerifyPasswords, async (req: Request, res: Response) => {
-  /*
-    email: string;
-    displayName?: string;
-    location?: string;
-    avatar?: string;
-    bio?: string;
-    primaryActivity?: string;
-    active: boolean;
-  */
   const id = parseInt(req.params.id, 10);
 
   try {

@@ -1,9 +1,9 @@
 -- Filling users
-INSERT INTO users(email, password)
+INSERT INTO users(email, password, active)
   VALUES
-    ('eric.miller2129@gmail.com', crypt('test1234', gen_salt('bf'))),
-    ('patrickmcghen@gmail.com', crypt('test1234', gen_salt('bf'))),
-    ('outdoorfunnetwork@gmail.com', crypt('test1234', gen_salt('bf')));
+    ('eric.miller2129@gmail.com', crypt('test1234', gen_salt('bf')), true),
+    ('patrickmcghen@gmail.com', crypt('test1234', gen_salt('bf')), true),
+    ('outdoorfunnetwork@gmail.com', crypt('test1234', gen_salt('bf')), true);
 
 INSERT INTO user_info(user_id, display_name, location, avatar, bio, primary_activity)
   VALUES

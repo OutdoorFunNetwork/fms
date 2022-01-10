@@ -68,6 +68,7 @@ create table posts_categories (
 CREATE TRIGGER set_timestamp BEFORE UPDATE ON posts_categories EXECUTE PROCEDURE trigger_set_timestamp();
 
 create table user_tokens (
+  id SERIAL,
   token TEXT UNIQUE NOT NULL,
   user_id INT REFERENCES users ON DELETE CASCADE,
   expires_at TIMESTAMPTZ NOT NULL,
@@ -77,3 +78,14 @@ create table user_tokens (
   CONSTRAINT fk_user FOREIGN KEY(user_id) REFERENCES users(id)
 );
 CREATE TRIGGER set_timestamp BEFORE UPDATE ON user_tokens EXECUTE PROCEDURE trigger_set_timestamp();
+
+create table refresh_tokens (
+  id SERIAL,
+  token TEXT NOT NULL,
+  user_id INT REFERENCES users ON DELETE CASCADE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (user_id),
+  CONSTRAINT fk_user FOREIGN KEY(user_id) REFERENCES users(id)
+);
+CREATE TRIGGER set_timestamp BEFORE UPDATE ON refresh_tokens EXECUTE PROCEDURE trigger_set_timestamp();

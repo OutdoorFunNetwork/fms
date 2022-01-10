@@ -1,10 +1,11 @@
 import express, { Request, Response } from 'express';
+import { jwtMiddleware } from '../_core';
 import { Post } from './post.model';
 import * as PostService from './post.service';
 
 const PostsRouter = express.Router();
 
-PostsRouter.get('/', async (req: Request, res: Response) => {
+PostsRouter.get('/', jwtMiddleware, async (req: Request, res: Response) => {
   try {
     const posts: Post[] = await PostService.findAll();
 

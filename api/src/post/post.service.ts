@@ -5,10 +5,10 @@ const POST_BASE_QUERY = `
 SELECT
     p.*,
     json_build_object(
-        'id', users.id,
-        'display_name', users.display_name,
-        'avatar', users.avatar,
-        'bio', users.bio
+        'id', user_info.id,
+        'display_name', user_info.display_name,
+        'avatar', user_info.avatar,
+        'bio', user_info.bio
     ) as author,
     ARRAY (
         SELECT
@@ -21,7 +21,7 @@ SELECT
             pc.post_id = p.id
     ) as categories
 FROM posts p
-    INNER JOIN users ON (users.id = p.author_id)
+    INNER JOIN user_info ON (user_info.id = p.author_id)
 `;
 
 export const findAll = async (): Promise<Post[]> => {
