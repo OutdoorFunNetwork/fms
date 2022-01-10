@@ -18,11 +18,11 @@ INSERT INTO categories(name)
     ('Backpacking'),
     ('Thom thoughts');
 
-INSERT INTO posts(slug, title, body, author_id)
+INSERT INTO posts(slug, title, body, author_id, published_at)
   VALUES
-    ('first-post', 'First Post', '# First Post', 1),
-    ('b-post', 'B makes a post', '## B uses headings!', 3),
-    ('pat-goes-backpacking', 'Pat goes backpacking', '# Heading 1', 2);
+    ('first-post', 'First Post', '# First Post', 1, NOW()),
+    ('b-post', 'B makes a post', '## B uses headings!', 3, NOW()),
+    ('pat-goes-backpacking', 'Pat goes backpacking', '# Heading 1', 2, NOW());
 
 INSERT INTO posts_categories(post_id, category_id)
   VALUES

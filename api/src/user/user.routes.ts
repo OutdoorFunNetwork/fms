@@ -2,10 +2,9 @@ import express, { Request, Response } from 'express';
 
 import {
   SendMail,
-  VerifyEmail,
   VerifyTokenMiddleware,
-  VerifyPasswords,
 } from '../_core';
+import { VerifyEmail, VerifyPasswords } from './user.verify';
 import * as UserService from './user.service';
 
 const UserRoutes = express.Router();

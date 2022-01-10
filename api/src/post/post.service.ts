@@ -1,4 +1,5 @@
 import pool from '../db';
+import ValidationError from '../_core/errors/ValidationError';
 import { Post } from './post.model';
 
 const POST_BASE_QUERY = `
@@ -25,12 +26,51 @@ FROM posts p
 `;
 
 export const findAll = async (): Promise<Post[]> => {
-  const { rows } = await pool.query(POST_BASE_QUERY);
+  const { rows } = await pool.query(`${POST_BASE_QUERY} WHERE published_at IS NOT NULL`);
 
   return rows;
 };
 export const findById = async (id: number): Promise<Post> => {
   const { rows } = await pool.query(`${POST_BASE_QUERY}  WHERE p.id = $1`, [id]);
+
+  return rows[0];
+};
+
+export const findBySlug = async (slug: string): Promise<Post> => {
+  const { rows } = await pool.query(`${POST_BASE_QUERY} WHERE p.slug=$1`, [slug]);
+
+  return rows[0];
+};
+
+export const createPost = async (post: Post, userId: number): Promise<Post> => {
+  const foundPost = await findBySlug(post.slug);
+
+  if (foundPost) {
+    throw new ValidationError('That slug already exists.');
+  }
+
+  let newPost;
+
+  try {
+    newPost = await pool.query(
+      'INSERT INTO posts(slug,title,body,author_id) VALUES($1,$2,$3,$4) RETURNING *',
+      [post.slug, post.title, post.body, userId],
+    );
+  } catch (e: any) {
+    throw new ValidationError(e);
+  }
+
+  return newPost.rows[0];
+};
+
+export const publishPost = async (postId: number): Promise<Post> => {
+  const foundPost = await findById(postId);
+
+  if (!foundPost) {
+    throw new ValidationError('Post not found.', 404);
+  }
+
+  const { rows } = await pool.query('UPDATE posts SET published_at=NOW() WHERE id=$1 RETURNING *', [postId]);
 
   return rows[0];
 };

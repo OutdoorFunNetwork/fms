@@ -48,6 +48,7 @@ create table posts (
   slug TEXT UNIQUE NOT NULL,
   title TEXT NOT NULL,
   body TEXT,
+  published_at TIMESTAMPTZ,
   author_id INT NOT NULL REFERENCES users ON DELETE CASCADE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
