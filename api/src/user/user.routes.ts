@@ -1,26 +1,26 @@
 import express, { Request, Response } from 'express';
 import validator from 'validator';
-import ValidationError from '../_core/errors/ValidationError';
-import { SendMail } from '../_core/mailer';
+import SendMail from '../_core/mailer';
+import VerifyTokenMiddleware from '../_core/middleware/verify-token.middleware';
 
 import * as UserService from './user.service';
 
-export const UserRoutes = express.Router();
+const UserRoutes = express.Router();
 
 UserRoutes.post('/', async (req: Request, res: Response) => {
   const {
-    email
+    email,
   } = req.body;
 
   if (
-    !email ||
-    (
-      validator.isEmpty(email) ||
-      !validator.isEmail(email)
+    !email
+    || (
+      validator.isEmpty(email)
+      || !validator.isEmail(email)
     )
   ) {
     return res.status(400).send({
-      message: 'There was a problem with the email field.'
+      message: 'There was a problem with the email field.',
     });
   }
 
@@ -29,16 +29,13 @@ UserRoutes.post('/', async (req: Request, res: Response) => {
   try {
     newUser = await UserService.StartCreateUser(email);
   } catch (e: any) {
-    console.log(e);
     return res.status(e.status || 500).send({ message: e.message });
   }
 
-  console.log(newUser);
-
   await SendMail(
     newUser.email,
-    `Finish setting up your account!`,
-    `Finish setting up your account with OFN by clicking <a href="http://localhost:3000/user/finish?token=${ newUser.token }&email=${ newUser.email }">here!</a>`
+    'Finish setting up your account!',
+    `Finish setting up your account with OFN by clicking <a href="http://localhost:3000/user/finish?token=${newUser.token}&email=${newUser.email}">here!</a>`,
   );
 
   return res.status(200).send({
@@ -50,19 +47,19 @@ UserRoutes.post('/', async (req: Request, res: Response) => {
 UserRoutes.post('/verify-token', async (req: Request, res: Response) => {
   const {
     email,
-    token
+    token,
   } = req.body;
 
   if (
-    !email ||
-    (
-      validator.isEmpty(email) ||
-      !validator.isEmail(email)
-    ) ||
-    !token || (validator.isEmpty(token))
+    !email
+    || (
+      validator.isEmpty(email)
+      || !validator.isEmail(email)
+    )
+    || !token || (validator.isEmpty(token))
   ) {
     return res.status(400).send({
-      message: 'There was a problem with the email or the token.'
+      message: 'There was a problem with the email or the token.',
     });
   }
 
@@ -71,7 +68,7 @@ UserRoutes.post('/verify-token', async (req: Request, res: Response) => {
 
   try {
     user = await UserService.getUserByEmail(email, true);
-    tokenQ = await UserService.VerifyToken(user.uid, token);
+    tokenQ = await UserService.VerifyToken(user.id, token);
   } catch (e: any) {
     return res.status(400).send({ message: e.message });
   }
@@ -79,12 +76,11 @@ UserRoutes.post('/verify-token', async (req: Request, res: Response) => {
   if (tokenQ) {
     return res.send(200);
   }
-  
-  res.status(400).send({ message: false });
 
+  res.status(400).send({ message: false });
 });
 
-UserRoutes.patch(`/finish/:id`, async (req: Request, res: Response) => {
+UserRoutes.patch('/finish/:id', VerifyTokenMiddleware, async (req: Request, res: Response) => {
   /*
     email: string;
     displayName?: string;
@@ -96,26 +92,31 @@ UserRoutes.patch(`/finish/:id`, async (req: Request, res: Response) => {
   */
 
   const {
+    // eslint-disable-next-line no-unused-vars
     displayName,
+    // eslint-disable-next-line no-unused-vars
     location,
+    // eslint-disable-next-line no-unused-vars
     avatar,
+    // eslint-disable-next-line no-unused-vars
     bio,
+    // eslint-disable-next-line no-unused-vars
     primaryActivity,
     password,
-    password_confirmation
+    passwordConfirmation,
   } = req.body;
 
-  if (!password || !password_confirmation) {
+  if (!password || !passwordConfirmation) {
     return res.status(400).send({
-      message: 'Missing passwords!'
-    })
+      message: 'Missing passwords!',
+    });
   }
 
   if (
-    validator.isEmpty(password) || validator.isEmpty(password_confirmation)
+    validator.isEmpty(password) || validator.isEmpty(passwordConfirmation)
   ) {
     return res.status(400).send({
-      message: 'Password or confirm password is empty!'
+      message: 'Password or confirm password is empty!',
     });
   }
 
@@ -124,20 +125,22 @@ UserRoutes.patch(`/finish/:id`, async (req: Request, res: Response) => {
     !validator.isStrongPassword(password)
   ) {
     return res.status(400).send({
-      message: 'Password must contain at least 8 characters, 1 uppercase, 1 lowercase, 1 number, and 1 symbol!'
+      message: 'Password must contain at least 8 characters, 1 uppercase, 1 lowercase, 1 number, and 1 symbol!',
     });
   }
 
   if (
-    password !== password_confirmation
+    password !== passwordConfirmation
   ) {
     return res.status(400).send({
-      message: 'Passwords do not match!'
+      message: 'Passwords do not match!',
     });
   }
 
   return res.status(200).send({
     status: 200,
-    message: 'User finished setting up profile!'
+    message: 'User finished setting up profile!',
   });
 });
+
+export default UserRoutes;

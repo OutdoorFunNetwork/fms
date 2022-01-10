@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
-import * as AuthService from './auth.service';
+import AuthService from './auth.service';
 
-export const AuthRoutes = express.Router();
+const AuthRoutes = express.Router();
 
 AuthRoutes.post('/login', async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -10,16 +10,18 @@ AuthRoutes.post('/login', async (req: Request, res: Response) => {
 
     if (user) {
       return res.status(200).send({
-        message: 'Successful login!'
+        message: 'Successful login!',
       });
     }
 
     res.status(401).send({
-      message: 'Invalid email or password.'
-    })
+      message: 'Invalid email or password.',
+    });
   } catch (e: any) {
     res.status(500).send({
       stacktrace: e.message,
-    })
+    });
   }
 });
+
+export default AuthRoutes;

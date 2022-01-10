@@ -11,12 +11,12 @@ export interface BaseUser {
 }
 
 export interface User extends BaseUser {
-    uid: number;
+    id: number;
     password: string;
 }
 
 export interface CreatedUser {
-    uid: number;
+    id: number;
     email: string;
     token: string;
 }
