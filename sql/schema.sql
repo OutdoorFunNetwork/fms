@@ -13,6 +13,8 @@ create table users (
   email TEXT UNIQUE NOT NULL,
   password TEXT,
   active BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   CONSTRAINT users_pkey PRIMARY KEY (id)
 );
 CREATE TRIGGER set_timestamp BEFORE UPDATE ON users EXECUTE PROCEDURE trigger_set_timestamp();

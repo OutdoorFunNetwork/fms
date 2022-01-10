@@ -2,7 +2,7 @@ import * as crypto from 'crypto';
 
 import pool from '../db';
 import ValidationError from '../_core/errors/ValidationError';
-import { CreatedUser, User } from './user.model';
+import { BaseUser, CreatedUser, User } from './user.model';
 
 /*
  email: string;
@@ -66,4 +66,21 @@ export const VerifyToken = async (id: number, token: string): Promise<boolean> =
   }
 
   return tokenQ.rowCount > 0;
+};
+
+export const FinishUser = async (id: number, user: User): Promise<BaseUser> => {
+  let newUser;
+  try {
+    newUser = await pool.query(`
+      INSERT INTO
+        user_info(user_id, display_name, location, avatar, bio, primary_activity)
+      VALUES($1, $2, $3, $4, $5, $6) RETURNING *
+    `, [id, user.displayName, user.location, user.avatar, user.bio, user.primaryActivity]);
+    await pool.query('UPDATE users SET active=$1, password=crypt($2, gen_salt(\'bf\')) WHERE id=$3', [true, user.password, newUser.rows[0].id]);
+    await pool.query('DELETE FROM user_tokens WHERE user_id=$1', [newUser.rows[0].id]);
+  } catch (e) {
+    throw new Error('Something went wrong.');
+  }
+
+  return newUser.rows[0];
 };
