@@ -3,7 +3,7 @@ import { jwtMiddleware } from '../_core';
 // import { jwtMiddleware } from '../_core';
 import { Post } from './post.model';
 import * as PostService from './post.service';
-import { VerifySlug, VerifyTitle } from './post.verify';
+import { FullValidate } from './post.verify';
 
 const PostsRouter = express.Router();
 
@@ -33,13 +33,15 @@ PostsRouter.get('/:id', async (req: Request, res: Response) => {
   }
 });
 
-PostsRouter.post('/', jwtMiddleware, VerifySlug, VerifyTitle, async (req: Request, res: Response) => {
+PostsRouter.post('/', jwtMiddleware, FullValidate, async (req: Request, res: Response) => {
   let post: Post;
   try {
     post = await PostService.createPost(req.body, res.locals.user.id);
   } catch (e: any) {
     return res.status(e.status || 500).send({
-      message: e.message,
+      errors: [
+        e.message,
+      ],
     });
   }
 
@@ -54,7 +56,9 @@ PostsRouter.patch('/:id/publish', jwtMiddleware, async (req: Request, res: Respo
     post = await PostService.publishPost(postId);
   } catch (e: any) {
     return res.status(e.status || 500).send({
-      message: e.message,
+      errors: [
+        e.message,
+      ],
     });
   }
 

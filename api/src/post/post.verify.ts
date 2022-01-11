@@ -1,32 +1,57 @@
 import { NextFunction, Request, Response } from 'express';
 import validator from 'validator';
 
-export const VerifySlug = async (req: Request, res: Response, next: NextFunction) => {
-  const { slug } = req.body;
+const VerifySlug = (slug: string): string[] => {
+  const errors: string[] = [];
 
   if (typeof slug === 'undefined' || validator.isEmpty(slug)) {
-    return res.status(400).send({
-      message: 'The slug is required!',
-    });
+    errors.push('The slug is required.');
+    // return res.status(400).send({
+    //   message: 'The slug is required!',
+    // });
   }
 
   if (!validator.isSlug(slug)) {
-    return res.status(400).send({
-      message: `${slug} is not a valid slug.`,
-    });
+    errors.push(`${slug} is not a valid slug.`);
+    // return res.status(400).send({
+    //   message: `${slug} is not a valid slug.`,
+    // });
   }
 
-  next();
+  return errors;
 };
 
-export const VerifyTitle = async (req: Request, res: Response, next: NextFunction) => {
-  const { title } = req.body;
+const VerifyTitle = (title: string): string[] => {
+  const errors: string[] = [];
+
   if (typeof title === 'undefined' || validator.isEmpty(title)) {
-    return res.status(400).send({
-      message: 'The title is required!',
-    });
+    errors.push('The title is required.');
+    // return res.status(400).send({
+    //   message: 'The title is required!',
+    // });
+  }
+
+  return errors;
+};
+
+export const FullValidate = async (req: Request, res: Response, next: NextFunction) => {
+  const {
+    slug,
+    title,
+  } = req.body;
+
+  const errors = [
+    ...VerifySlug(slug),
+    ...VerifyTitle(title),
+  ];
+
+  if (errors.length > 0) {
+    return res.status(400).send({ errors });
   }
 
   req.body.title = validator.escape(req.body.title);
+
   next();
 };
+
+export default FullValidate;
