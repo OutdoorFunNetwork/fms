@@ -45,6 +45,22 @@ PostsRouter.patch('/:id', jwtMiddleware, async (req: Request, res: Response) => 
   }
 });
 
+PostsRouter.delete('/:id', jwtMiddleware, async (req: Request, res: Response) => {
+  const postId = parseInt(req.params.id, 10);
+
+  try {
+    await PostService.deletePost(postId);
+  } catch (e: any) {
+    return res.status(e.status || 500).send({
+      errors: [
+        e.message,
+      ],
+    });
+  }
+
+  return res.sendStatus(200);
+});
+
 PostsRouter.post('/', jwtMiddleware, FullValidate, async (req: Request, res: Response) => {
   let post: Post;
   try {
@@ -66,6 +82,23 @@ PostsRouter.patch('/:id/publish', jwtMiddleware, async (req: Request, res: Respo
 
   try {
     post = await PostService.publishPost(postId);
+  } catch (e: any) {
+    return res.status(e.status || 500).send({
+      errors: [
+        e.message,
+      ],
+    });
+  }
+
+  return res.status(200).send(post);
+});
+
+PostsRouter.patch('/:id/unpublish', jwtMiddleware, async (req: Request, res: Response) => {
+  const postId = parseInt(req.params.id, 10);
+  let post;
+
+  try {
+    post = await PostService.unPublishPost(postId);
   } catch (e: any) {
     return res.status(e.status || 500).send({
       errors: [

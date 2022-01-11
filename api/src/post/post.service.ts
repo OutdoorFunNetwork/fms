@@ -96,3 +96,27 @@ export const publishPost = async (postId: number): Promise<Post> => {
 
   return rows[0];
 };
+
+export const unPublishPost = async (postId: number): Promise<Post> => {
+  const foundPost = await findById(postId);
+
+  if (!foundPost) {
+    throw new ValidationError('Post not found.', 404);
+  }
+
+  const { rows } = await pool.query('UPDATE posts SET published_at=null WHERE id=$1 RETURNING *', [postId]);
+
+  return rows[0];
+};
+
+export const deletePost = async (postId: number): Promise<number> => {
+  const foundPost = await findById(postId);
+
+  if (!foundPost) {
+    throw new ValidationError('Post not found.', 404);
+  }
+
+  const post = await pool.query('DELETE FROM posts WHERE id=$1', [postId]);
+
+  return post.rowCount;
+};
