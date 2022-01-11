@@ -33,6 +33,18 @@ PostsRouter.get('/:id', async (req: Request, res: Response) => {
   }
 });
 
+PostsRouter.patch('/:id', jwtMiddleware, async (req: Request, res: Response) => {
+  const id: number = parseInt(req.params.id, 10);
+
+  try {
+    const post: Post = await PostService.updatePost(req.body, id);
+
+    res.status(200).send(post);
+  } catch (e: any) {
+    res.status(400).send({ errors: [e.message] });
+  }
+});
+
 PostsRouter.post('/', jwtMiddleware, FullValidate, async (req: Request, res: Response) => {
   let post: Post;
   try {

@@ -63,6 +63,28 @@ export const createPost = async (post: Post, userId: number): Promise<Post> => {
   return newPost.rows[0];
 };
 
+export const updatePost = async (post: Post, postId: number): Promise<Post> => {
+  const foundPost = await findBySlug(post.slug);
+
+  if (foundPost && foundPost.id !== postId) {
+    throw new ValidationError('That slug already exists.');
+  }
+
+  // https://stackoverflow.com/questions/13305878/dont-update-column-if-update-value-is-null
+  const { rows } = await pool.query(`
+    UPDATE posts
+    SET
+      slug=COALESCE($1, slug),
+      title=COALESCE($2, title),
+      body=COALESCE($3, body)
+    WHERE
+      id=$4
+    RETURNING *
+  `, [post.slug, post.title, post.body, postId]);
+
+  return rows[0];
+};
+
 export const publishPost = async (postId: number): Promise<Post> => {
   const foundPost = await findById(postId);
 
