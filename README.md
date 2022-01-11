@@ -16,6 +16,10 @@ I haven't found a better way to install the dependencies yet so for now you must
 - [Front-end](http://localhost:3000)
 - [Backend](http://localhost:8181)
 
+## Environment
+
+Make sure you copy `api/.env.example` to `.env` and update the values!
+
 ## Database
 
 To get into postgres:

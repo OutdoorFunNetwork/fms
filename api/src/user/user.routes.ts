@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 
 import {
+  jwtMiddleware,
   SendMail,
   VerifyTokenMiddleware,
 } from '../_core';
@@ -19,7 +20,7 @@ UserRoutes.post('/', VerifyEmail, async (req: Request, res: Response) => {
   try {
     newUser = await UserService.StartCreateUser(email);
   } catch (e: any) {
-    return res.status(e.status || 500).send({ message: e.message });
+    return res.status(e.status || 500).send({ errors: [e.message] });
   }
 
   await SendMail(
@@ -32,6 +33,16 @@ UserRoutes.post('/', VerifyEmail, async (req: Request, res: Response) => {
     status: 200,
     message: `User creation started, sent an email to ${newUser.email} to finish setting up.`,
   });
+});
+
+UserRoutes.patch('/', jwtMiddleware, async (req: Request, res: Response) => {
+  try {
+    await UserService.UpdateUserInfo(res.locals.user.id, req.body);
+  } catch (e: any) {
+    res.status(e.status || 500).send({ errors: [e.message] });
+  }
+
+  res.sendStatus(200);
 });
 
 UserRoutes.patch('/finish/:id', VerifyTokenMiddleware, VerifyPasswords, async (req: Request, res: Response) => {

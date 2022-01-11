@@ -84,3 +84,19 @@ export const FinishUser = async (id: number, user: User): Promise<BaseUser> => {
 
   return newUser.rows[0];
 };
+
+export const UpdateUserInfo = async (userId: number, user: User): Promise<void> => {
+  const { rows } = await pool.query(`
+    UPDATE user_info
+    SET
+      display_name=COALESCE($1, display_name),
+      bio=COALESCE($2, bio),
+      location=COALESCE($3, location),
+      primary_activity=COALESCE($4, primary_activity)
+    WHERE
+      user_id=$5
+    RETURNING *
+  `, [user.displayName, user.bio, user.location, user.primaryActivity, userId]);
+
+  return rows[0];
+};
