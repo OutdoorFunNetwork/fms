@@ -5,7 +5,7 @@ import Image from 'next/image'
 const Home: NextPage = () => {
   return (
     <>
-      <h1>Buncha nugs</h1>
+      <h1>Welcome home</h1>
     </>
   )
 }
