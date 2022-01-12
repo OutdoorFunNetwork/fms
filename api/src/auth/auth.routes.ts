@@ -9,7 +9,8 @@ dotenv.config();
 
 const generateAccessToken = (user: Partial<BaseUser>): string => (
   jwt.sign(user, process.env.FMS_SECRET as string, {
-    expiresIn: process.env.FMS_TOKEN_EXPIRE as string,
+    // expiresIn: process.env.FMS_TOKEN_EXPIRE as string,
+    expiresIn: '10s',
   })
 );
 
@@ -23,6 +24,10 @@ AuthRoutes.post('/login', async (req: Request, res: Response) => {
     if (user) {
       const accessToken = generateAccessToken(user);
       const refreshToken = jwt.sign(user, process.env.FMS_REFRESH_SECRET as string);
+
+      res.cookie('jwt', accessToken, {
+        httpOnly: true,
+      });
 
       try {
         await AuthService.SaveRefresh(user.id, refreshToken);

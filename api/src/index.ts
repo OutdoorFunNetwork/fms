@@ -2,6 +2,8 @@ import * as dotenv from 'dotenv';
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
+
 import PostsRouter from './post/post.routes';
 import AuthRoutes from './auth/auth.routes';
 import UserRoutes from './user/user.routes';
@@ -12,9 +14,13 @@ const port: number = parseInt(process.env.PORT as string, 10) || 8181;
 const app = express();
 
 app.use(helmet());
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.get('/api', (req: Request, res: Response) => {
   res.status(200).send({
