@@ -12,6 +12,8 @@ class AuthService {
     const { data } = await axios.post<LoginRes>(`${API_PREFIX}/auth/login`, {
       email,
       password,
+    }, {
+      withCredentials: true
     });
     const { accessToken, refreshToken } = data;
 
@@ -22,11 +24,7 @@ class AuthService {
   }
 
   async logout() {
-    return await axios.delete(`${API_PREFIX}/auth/logout`, {
-      data: {
-        token: '', // TODO: get the accessToken from localstorage.
-      },
-    });
+    return await axios.delete(`${API_PREFIX}/auth/logout`, { withCredentials: true });
   }
 }
 

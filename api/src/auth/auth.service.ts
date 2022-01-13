@@ -1,6 +1,31 @@
 import { BaseUser } from '../user/user.model';
 import pool from '../db';
 
+export const GetMe = async (id: number): Promise<BaseUser> => {
+  const { rows } = await pool.query(`
+    SELECT
+      u.id,
+      u.email,
+      ui.display_name,
+      ui.location,
+      ui.avatar,
+      ui.bio,
+      ui.primary_activity,
+      ui.created_at,
+      ui.updated_at
+    FROM
+      users u
+    JOIN
+      user_info ui
+    ON
+      ui.user_id=u.id
+    WHERE
+      u.id=$1
+  `, [id]);
+
+  return rows[0];
+};
+
 export const Login = async (email: string, password: string): Promise<BaseUser> => {
   const { rows } = await pool.query(
     `

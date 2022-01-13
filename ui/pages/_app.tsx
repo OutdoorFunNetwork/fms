@@ -1,12 +1,12 @@
 import '../sass/styles.scss';
 import type { AppProps } from 'next/app'
+import { useState } from 'react';
 
-const App = ({ Component, pageProps }: AppProps) => (
-  <Component {...pageProps} />
-);
+const App = ({ Component, pageProps }: AppProps) => {
+  const [user, setUser] = useState(null);
 
-// function MyApp({ Component, pageProps }: AppProps) {
-//   return <Component {...pageProps} />
-// }
-
+  return (
+    <Component {...pageProps} />
+  );
+};
 export default App;

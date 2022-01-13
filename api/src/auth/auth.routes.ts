@@ -3,18 +3,30 @@ import express, { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
 import { BaseUser } from '../user/user.model';
+import { jwtMiddleware } from '../_core';
 import * as AuthService from './auth.service';
 
 dotenv.config();
 
 const generateAccessToken = (user: Partial<BaseUser>): string => (
   jwt.sign(user, process.env.FMS_SECRET as string, {
-    // expiresIn: process.env.FMS_TOKEN_EXPIRE as string,
-    expiresIn: '10s',
+    expiresIn: process.env.FMS_TOKEN_EXPIRE as string,
   })
 );
 
 const AuthRoutes = express.Router();
+
+AuthRoutes.get('/me', jwtMiddleware, async (req: Request, res: Response) => {
+  let user;
+
+  try {
+    user = await AuthService.GetMe(res.locals.user.id);
+  } catch (e: any) {
+    res.status(e.status || 500).send({ errors: [e.message] });
+  }
+
+  res.status(200).send(user);
+});
 
 AuthRoutes.post('/login', async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -27,6 +39,16 @@ AuthRoutes.post('/login', async (req: Request, res: Response) => {
 
       res.cookie('jwt', accessToken, {
         httpOnly: true,
+        path: '/api/',
+        secure: process.env.ENV !== 'dev',
+        sameSite: 'strict',
+      });
+
+      res.cookie('refreshJwt', refreshToken, {
+        httpOnly: true,
+        path: '/api/auth/token',
+        secure: process.env.ENV !== 'dev',
+        sameSite: 'strict',
       });
 
       try {
@@ -42,7 +64,7 @@ AuthRoutes.post('/login', async (req: Request, res: Response) => {
     }
 
     res.status(401).send({
-      message: 'Invalid email or password.',
+      errors: ['Invalid email or password.'],
     });
   } catch (e: any) {
     res.status(500).send({
@@ -52,12 +74,12 @@ AuthRoutes.post('/login', async (req: Request, res: Response) => {
 });
 
 AuthRoutes.delete('/logout', async (req: Request, res: Response) => {
-  await AuthService.DeleteRefresh(req.body.token);
+  await AuthService.DeleteRefresh(req.cookies.token);
   res.sendStatus(204);
 });
 
 AuthRoutes.post('/token', async (req: Request, res: Response) => {
-  const { token } = req.body;
+  const token = req.cookies.refreshJwt;
 
   if (token === null || typeof token === 'undefined') return res.sendStatus(401);
 
@@ -71,6 +93,13 @@ AuthRoutes.post('/token', async (req: Request, res: Response) => {
       process.env.FMS_REFRESH_SECRET as string,
     ) as BaseUser;
     const accessToken = generateAccessToken({ id: decode.id, email: decode.email });
+
+    res.cookie('jwt', accessToken, {
+      httpOnly: true,
+      path: '/api/',
+      secure: process.env.ENV !== 'dev',
+      sameSite: 'strict',
+    });
 
     return res.send({
       accessToken,

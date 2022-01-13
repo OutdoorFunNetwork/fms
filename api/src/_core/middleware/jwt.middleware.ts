@@ -12,6 +12,7 @@ const jwtMiddleware = async (req: Request, res: Response, next: NextFunction) =>
   if (token === null || typeof token === 'undefined') return res.sendStatus(401);
 
   let decode;
+
   try {
     decode = await jwt.verify(token, process.env.FMS_SECRET as string);
   } catch (e) {
