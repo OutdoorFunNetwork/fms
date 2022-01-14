@@ -24,11 +24,13 @@ button {
     left: -10%;
     z-index: -1;
     bottom: 0;
-    background: darken($yellow, 5);
+    background: $red;
     transform: skewX(15deg);
     border-radius: pxToEm($border-radius);
   }
-
+  &:hover {
+    color: #fff;
+  }
   &:hover:after{
     width: 120%;
   }
