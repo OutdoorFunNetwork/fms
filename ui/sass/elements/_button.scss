@@ -1,0 +1,35 @@
+button {
+  width: 100%;
+  display: block;
+  border: 0;
+  background: $yellow;
+  padding: pxToEm(10) pxToEm(15);
+  font-size: 1em;
+  color: $black;
+  border-radius: pxToEm($border-radius);
+  letter-spacing: pxToEm(1.4);
+  font-weight: 600;
+  position: relative;
+  transition: 0.3s;
+  overflow: hidden;
+  z-index: 1;
+  cursor: pointer;
+
+  &:after {
+    position: absolute;
+    transition: 0.3s;
+    content: '';
+    width: 0;
+    height: 120%;
+    left: -10%;
+    z-index: -1;
+    bottom: 0;
+    background: darken($yellow, 5);
+    transform: skewX(15deg);
+    border-radius: pxToEm($border-radius);
+  }
+
+  &:hover:after{
+    width: 120%;
+  }
+}
