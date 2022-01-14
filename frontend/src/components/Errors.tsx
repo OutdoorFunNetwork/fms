@@ -1,5 +1,3 @@
-import { FC } from 'react';
-
 type ErrorList = {
   errors: string[];
 }

@@ -57,10 +57,7 @@ AuthRoutes.post('/login', async (req: Request, res: Response) => {
         return res.sendStatus(500);
       }
 
-      return res.status(200).send({
-        accessToken,
-        refreshToken,
-      });
+      return res.sendStatus(200);
     }
 
     res.status(401).send({
