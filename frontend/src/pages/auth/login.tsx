@@ -1,46 +1,20 @@
 import { FC, FormEvent, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Errors from '../../components/Errors';
-import authService from '../../services/auth.service';
-
-// type AuthCreds = {
-//   email: string;
-//   password: string;
-// }
-
-// type Tokens = {
-//   accessToken: string;
-//   refreshToken: string;
-// }
+import useAuth from '../../context/useAuth';
 
 const Login: FC = () => {
-  const router = useNavigate();
-
+  const { login, loading, errors } = useAuth();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [errors, setError] = useState([]);
-  const [status, setStatus] = useState('disabled');
 
   const valid = (): boolean => {
     return email.length > 0 && password.length > 0;
   }
 
-  const handleOnSubmit = async (e: FormEvent) => {
+  const handleOnSubmit = async (e: FormEvent): Promise<void> => {
     e.preventDefault();
-    setStatus('submitting');
 
-    try {
-      await authService.login(email, password);
-
-      router('/blocked', {
-        replace: true,
-      });
-    } catch (e: any) {
-      const { data } = e.response;
-
-      setError(data.errors);
-      setStatus('error');
-    }
+    await login(email, password);
   };
 
   return (
@@ -51,7 +25,7 @@ const Login: FC = () => {
           Welcome to the FMS, your adventure post awaits!
         </p>
         {
-          status === 'error' && <Errors errors={errors} />
+          errors && <Errors errors={errors} />
         }
         <form onSubmit={handleOnSubmit}>
           <div>
@@ -61,7 +35,7 @@ const Login: FC = () => {
               id="email"
               name="email"
               onChange={(e) => setEmail(e.target.value)}
-              disabled={status === 'submitting'}
+              disabled={loading}
               autoComplete="new-password"
               required
             />
@@ -74,12 +48,12 @@ const Login: FC = () => {
               name="password"
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="new-password"
-              disabled={status === 'submitting'}
+              disabled={loading}
               required
             />
           </div>
           <div>
-            <button type="submit" disabled={!valid() || status === 'submitting'}>Sign In</button>
+            <button type="submit" disabled={!valid() || loading}>Sign In</button>
           </div>
         </form>
       </div>

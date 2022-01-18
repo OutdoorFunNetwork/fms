@@ -6,11 +6,11 @@ export const GetMe = async (id: number): Promise<BaseUser> => {
     SELECT
       u.id,
       u.email,
-      ui.display_name,
+      ui.display_name as "displayName",
       ui.location,
       ui.avatar,
       ui.bio,
-      ui.primary_activity,
+      ui.primary_activity as "primaryActivity",
       ui.created_at,
       ui.updated_at
     FROM
@@ -52,6 +52,8 @@ export const GetRefresh = async (token: string): Promise<boolean> => {
   return rowCount > 0;
 };
 
-export const DeleteRefresh = async (token: string): Promise<void> => {
-  await pool.query('DELETE FROM refresh_tokens WHERE token=$1', [token]);
+export const DeleteRefresh = async (token: string): Promise<number> => {
+  const { rowCount } = await pool.query('DELETE FROM refresh_tokens WHERE token=$1', [token]);
+
+  return rowCount;
 };

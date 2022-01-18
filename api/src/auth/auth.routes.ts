@@ -46,7 +46,7 @@ AuthRoutes.post('/login', async (req: Request, res: Response) => {
 
       res.cookie('refreshJwt', refreshToken, {
         httpOnly: true,
-        path: '/api/auth/token',
+        path: '/api/auth',
         secure: process.env.ENV !== 'dev',
         sameSite: 'strict',
       });
@@ -71,7 +71,20 @@ AuthRoutes.post('/login', async (req: Request, res: Response) => {
 });
 
 AuthRoutes.delete('/logout', async (req: Request, res: Response) => {
-  await AuthService.DeleteRefresh(req.cookies.token);
+  await AuthService.DeleteRefresh(req.cookies.refreshJwt);
+  res.clearCookie('jwt', {
+    httpOnly: true,
+    path: '/api/',
+    secure: process.env.ENV !== 'dev',
+    sameSite: 'strict',
+  });
+
+  res.clearCookie('refreshJwt', {
+    httpOnly: true,
+    path: '/api/auth',
+    secure: process.env.ENV !== 'dev',
+    sameSite: 'strict',
+  });
   res.sendStatus(204);
 });
 
@@ -98,9 +111,7 @@ AuthRoutes.post('/token', async (req: Request, res: Response) => {
       sameSite: 'strict',
     });
 
-    return res.send({
-      accessToken,
-    });
+    return res.sendStatus(200);
   } catch (e) {
     return res.sendStatus(403);
   }
