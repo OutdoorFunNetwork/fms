@@ -6,7 +6,7 @@ import Login from './pages/auth/login';
 
 const Blocked: FC = () => (
   <>
-    <h1>Blocked Page!</h1>
+    <h1>Dashboard!</h1>
   </>
 );
 

@@ -1,21 +1,15 @@
 import { FC } from 'react';
 import { Outlet } from 'react-router-dom';
-import useAuth from '../context/useAuth';
 import AuthRoute from './AuthRoute';
+import CmsNav from './CmsNav';
 
 const CmsLayout: FC = () => {
-  const { logout } = useAuth();
-
-  const handleLogout = async () => {
-    await logout();
-  };
-
   return (
     <AuthRoute>
-      <>
-        <button type="button" onClick={handleLogout}>Logout</button>
+      <div className="container container--cms">
+        <CmsNav />
         <Outlet />
-      </>
+      </div>
     </AuthRoute>
   )
 }

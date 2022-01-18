@@ -1,13 +1,19 @@
 .container {
   width: 100%;
-  max-width: 1120px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
 
   &--user {
+    max-width: 1120px;
     height: 100%;
     justify-content: center;
     align-items: center;
+  }
+
+  &--cms {
+    flex-direction: row;
+    gap: 20px;
+    height: 100%;
   }
 }

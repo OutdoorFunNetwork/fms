@@ -34,4 +34,13 @@ button {
   &:hover:after{
     width: 120%;
   }
+
+  &.alternate {
+    background: $red;
+    color: #fff;
+
+    &:after {
+      background: $black;
+    }
+  }
 }
