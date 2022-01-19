@@ -14,6 +14,6 @@ const CmsNav: FC = () => {
       <button type="button" className="alternate" onClick={handleLogout}>Logout</button>
     </nav>
   );
-}
+};
 
 export default CmsNav;

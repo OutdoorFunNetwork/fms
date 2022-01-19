@@ -1,15 +1,15 @@
 import { FC, FormEvent, useState } from 'react';
 import Errors from '../../components/Errors';
 import useAuth from '../../context/useAuth';
+import useTitle from '../../hooks/useTitle';
 
 const Login: FC = () => {
+  useTitle('Login');
   const { login, loading, errors } = useAuth();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
-  const valid = (): boolean => {
-    return email.length > 0 && password.length > 0;
-  }
+  const valid = (): boolean => email.length > 0 && password.length > 0;
 
   const handleOnSubmit = async (e: FormEvent): Promise<void> => {
     e.preventDefault();
@@ -58,7 +58,7 @@ const Login: FC = () => {
         </form>
       </div>
     </div>
-  )
+  );
 };
 
 export default Login;

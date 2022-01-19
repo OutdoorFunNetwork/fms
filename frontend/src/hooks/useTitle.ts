@@ -1,8 +1,9 @@
-import { useRef } from 'react';
+import { useEffect } from 'react';
 
-const useTitle = (title: string, revert = false) => {
-  const defaultTItle = useRef(document.title);
-
-}
+const useTitle = (title: string) => {
+  useEffect(() => {
+    document.title = `${title} | Fun Management System`;
+  }, [title]);
+};
 
 export default useTitle;

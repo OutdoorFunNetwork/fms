@@ -5,7 +5,7 @@ type ErrorList = {
 const Errors = ({ errors }: ErrorList): JSX.Element => (
   <>
     {
-      errors.map(e => <span key={e}>{e}</span>)
+      errors.map((e: string) => <span key={e}>{e}</span>)
     }
   </>
 );

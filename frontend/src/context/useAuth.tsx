@@ -1,4 +1,6 @@
-import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import {
+  createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState,
+} from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { User } from '../models/User';
 import authService from '../services/auth.service';
@@ -7,6 +9,7 @@ type AuthContextType = {
   user?: User;
   loading: boolean;
   errors?: string[];
+  // eslint-disable-next-line no-unused-vars
   login: (email: string, password: string) => void;
   logout: () => void;
 }
@@ -22,11 +25,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }): JSX.Element
   const router = useNavigate();
   const { pathname, state }: { pathname: string, state: any } = useLocation();
 
-  let redirectTo = state?.from?.pathname || '/cms';
+  const redirectTo = state?.from?.pathname || '/cms';
   // If the page changes reset the errors.
   useEffect(() => {
     if (errors) setErrors(null);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   /*
@@ -34,13 +36,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }): JSX.Element
   * At the end just let the app know initial load is done.
   */
   useEffect(() => {
-    let controller = new AbortController();
+    const controller = new AbortController();
     (async () => {
       try {
-        const { data: apiUser } = await authService.me()
+        const { data: apiUser } = await authService.me();
         setUser(apiUser);
-      } catch (e: any) { }
-      finally {
+      } catch (e: any) {
+        return;
+      } finally {
         setInitialLoading(false);
       }
     })();
@@ -67,8 +70,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }): JSX.Element
       setErrors(data.errors);
     } finally {
       setLoading(false);
-    };
-
+    }
   }, [router, redirectTo]);
 
   const logout = useCallback(async () => {
@@ -91,8 +93,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }): JSX.Element
     <AuthContext.Provider value={memo}>
       {!loadingInitial && children}
     </AuthContext.Provider>
-  )
-}
+  );
+};
 
 export default function useAuth() {
   const context = useContext(AuthContext);
