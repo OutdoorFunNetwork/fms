@@ -4,6 +4,7 @@ import CmsLayout from './components/CmsLayout';
 import { AuthProvider } from './context/useAuth';
 import Login from './pages/auth/login';
 import Posts from './pages/posts';
+import Users from './pages/users';
 
 const Paths: FC = () => (
   <AuthProvider>
@@ -13,7 +14,8 @@ const Paths: FC = () => (
       <Route
         path="/"
         element={<CmsLayout />}>
-          <Route path="/" element={<Posts />} />
+        <Route path="/" element={<Posts />} />
+        <Route path="/users" element={<Users />} />
       </Route>
     </Routes>
   </AuthProvider>
