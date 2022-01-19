@@ -7,7 +7,9 @@ const CmsLayout: FC = () => (
   <AuthRoute>
     <div className="container container--cms">
       <CmsNav />
-      <Outlet />
+      <main className="content">
+        <Outlet />
+      </main>
     </div>
   </AuthRoute>
 );

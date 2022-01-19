@@ -1,0 +1,44 @@
+.cms-sidebar{
+  width: pxToEm(300);
+  padding: pxToEm(40) pxToEm(20);
+  height: 100%;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  &:after, &:before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: -45px;
+    transform: skewX(25deg) scaleX(-1);
+    width: 120%;
+    height: 30px;
+    background: linear-gradient(to right,
+      lighten($altColor, 20) 0%,
+      lighten($altColor, 20) 10%,
+      lighten($altColor, 8) 10%,
+      lighten($altColor, 8) 15%,
+      $altColor 15%,
+      $altColor 75%,
+      darken($altColor, 10) 75%,
+      darken($altColor, 10) 80%,
+      darken($altColor, 15) 80%,
+      darken($altColor, 15) 85%
+    );
+    z-index: -1;
+  }
+
+  &:before {
+    top: 0;
+    left: -15px;
+    bottom: auto;
+    transform: skewX(25deg) scaleX(1);
+  }
+
+  .logout {
+    margin-top: auto;
+  }
+}

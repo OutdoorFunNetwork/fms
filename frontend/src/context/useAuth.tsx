@@ -29,6 +29,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }): JSX.Element
   // If the page changes reset the errors.
   useEffect(() => {
     if (errors) setErrors(null);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   /*

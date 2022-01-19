@@ -6,7 +6,7 @@ import './sass/styles.scss';
 
 import reportWebVitals from './reportWebVitals';
 
-import { Paths as Routes } from './routes';
+import Routes from './routes';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -14,7 +14,7 @@ ReactDOM.render(
       <Routes />
     </BrowserRouter>
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById('root'),
 );
 
 // If you want to start measuring performance in your app, pass a function

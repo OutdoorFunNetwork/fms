@@ -53,7 +53,7 @@ const Login: FC = () => {
             />
           </div>
           <div>
-            <button type="submit" disabled={!valid() || loading}>Sign In</button>
+            <button type="submit" className="alternate" disabled={!valid() || loading}>Sign In</button>
           </div>
         </form>
       </div>

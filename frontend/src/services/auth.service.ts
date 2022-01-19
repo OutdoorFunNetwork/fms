@@ -1,26 +1,26 @@
 import axios, { AxiosResponse } from 'axios';
 import api from './api.service';
 
-const API_PREFIX = process.env.REACT_APP_API_PREFIX;
-
 class AuthService {
-  async login(email: string, password: string) {
-    return await axios.post(`${API_PREFIX}/auth/login`, {
+  api_prefix = process.env.REACT_APP_API_PREFIX;
+
+  login(email: string, password: string) {
+    return axios.post(`${this.api_prefix}/auth/login`, {
       email,
       password,
     }, {
-      withCredentials: true
-    });
-  }
-
-  async me(): Promise<AxiosResponse> {
-    return await api.get(`${API_PREFIX}/auth/me`, {
       withCredentials: true,
     });
   }
 
-  async logout() {
-    return await axios.delete(`${API_PREFIX}/auth/logout`, { withCredentials: true });
+  me(): Promise<AxiosResponse> {
+    return api.get(`${this.api_prefix}/auth/me`, {
+      withCredentials: true,
+    });
+  }
+
+  logout() {
+    return axios.delete(`${this.api_prefix}/auth/logout`, { withCredentials: true });
   }
 }
 

@@ -1,9 +1,19 @@
 $yellow: #ffc600;
-$red: #ff2100;
-$black: #000;
+$red: hsl(8, 100%, 50%);
+$black: hsl(190, 88%, 5%);
 $gray: hsl(0, 0%, 10%);
+$white: #fafafa;
+$blue: hsl(190, 88%, 44%);
+$lightmodeGray: hsl(190, 0%, 97%);
 
-$bg: $gray;
+$darkmodeBg: $black;
+$darkmodeAltBg: hsl(190, 88%, 6%);
+
+$lightmodeBg: $lightmodeGray;
+$lightmodeAltBg: $white;
+
+$primaryColor: $white;
+$altColor: $blue;
 
 $border-radius: 5; // px
 $font-size-base: 16;

@@ -3,8 +3,8 @@ import axios, { AxiosError } from 'axios';
 const instance = axios.create({
   baseURL: process.env.REACT_APP_API_PREFIX,
   headers: {
-    'Content-Type': 'application/json'
-  }
+    'Content-Type': 'application/json',
+  },
 });
 
 instance.interceptors.response.use(
@@ -25,7 +25,7 @@ instance.interceptors.response.use(
     }
 
     return Promise.reject(err);
-  }
-)
+  },
+);
 
 export default instance;
