@@ -17,21 +17,22 @@ services:
     volumes:
       - ./sql/schema.sql:/docker-entrypoint-initdb.d/schema.sql
       - ./sql/seeder.sql:/docker-entrypoint-initdb.d/seeder.sql
-  ui:
-    container_name: fms_frontend
-    build:
-      context: ./frontend
-      dockerfile: dockerfile.ui
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./frontend:/usr/src/app
-  backend:
-    container_name: fms_api
-    build:
-      context: ./api
-      dockerfile: dockerfile
-    ports:
-      - "8181:8181"
-    volumes:
-      - ./api:/usr/src/app
+  # app:
+  #   container_name: fms_app
+  #   build:
+  #     context: ./app
+  #     dockerfile: dockerfile.app
+  #   ports:
+  #     - "3000:3000"
+  #     - "8002:8002"
+  #   volumes:
+  #     - ./app:/usr/src/app
+  # backend:
+  #   container_name: fms_api
+  #   build:
+  #     context: ./api
+  #     dockerfile: dockerfile
+  #   ports:
+  #     - "8181:8181"
+  #   volumes:
+  #     - ./api:/usr/src/app

@@ -1,9 +1,0 @@
-FROM node
-
-RUN mkdir -p /usr/src/app
-
-WORKDIR /usr/src/app
-
-EXPOSE 3000
-# You can change this
-CMD npm start
