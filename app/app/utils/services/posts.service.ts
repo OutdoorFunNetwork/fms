@@ -31,8 +31,8 @@ export const findAll = async (): Promise<{ posts: Post[], count: number }> => {
 
   return { posts: rows, count: rowCount };
 };
-export const findById = async (id: number): Promise<Post> => {
-  const { rows } = await pool.query(`${POST_BASE_QUERY}  WHERE p.id = $1`, [id]);
+export const findById = async (id: number, published=true): Promise<Post> => {
+  const { rows } = await pool.query(`${POST_BASE_QUERY}  WHERE p.id = $1 ${ published ? 'AND published_at IS NOT NULL' : ''}`, [id]);
 
   return rows[0];
 };

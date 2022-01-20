@@ -1,9 +1,9 @@
+import { findAll as allPosts } from '~/utils/services/posts.service';
 /* eslint-disable import/prefer-default-export */
 import { json, LoaderFunction } from 'remix';
-import { pool } from '~/utils/db.server';
 
 export const loader: LoaderFunction = async () => {
-  const { rows } = await pool.query('SELECT * FROM posts');
+  const data = await allPosts();
 
-  return json(rows, 200);
+  return json(data, 200);
 };
