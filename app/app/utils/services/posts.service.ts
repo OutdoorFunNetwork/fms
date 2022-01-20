@@ -26,8 +26,19 @@ FROM posts p
     INNER JOIN user_info ON (user_info.id = p.author_id)
 `;
 
-export const findAll = async (): Promise<{ posts: Post[], count: number }> => {
-  const { rows, rowCount } = await pool.query(`${POST_BASE_QUERY} WHERE published_at IS NOT NULL`);
+export const findAll = async (
+  page: number = 1,
+  size: number = 10
+): Promise<{ posts: Post[], count: number }> => {
+  const { rows, rowCount } = await pool.query(`
+    ${POST_BASE_QUERY}
+    WHERE published_at IS NOT NULL
+    ORDER BY published_at
+    LIMIT $2
+    OFFSET ($1 - 1) * $2
+    `, [page, size]
+  );
+
 
   return { posts: rows, count: rowCount };
 };
