@@ -1,6 +1,5 @@
 import { FC } from 'react';
-import { Link } from 'react-router-dom';
-import { LoaderFunction, useLoaderData } from 'remix';
+import { LoaderFunction, useLoaderData, Link, MetaFunction } from 'remix';
 import { Post } from '~/utils/models/Post';
 import { findAll as findAllPosts } from '~/utils/services/posts.service';
 
@@ -15,11 +14,15 @@ export const loader: LoaderFunction = async () => {
   return data;
 };
 
+export const meta: MetaFunction = ({ parentsData }) => {
+  return { title: `Our Posts | ${ parentsData.root.baseTitle }` };
+};
+
 const Index: FC = () => {
   const data: PostList = useLoaderData();
   return (
     <>
-      <h1>Posts</h1>
+      <h1>Our Posts</h1>
       <ul>
         {
           data.posts.map((p: Post) => (

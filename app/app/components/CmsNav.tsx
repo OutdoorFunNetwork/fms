@@ -1,10 +1,10 @@
 import { CgFileDocument, CgUserList, CgList } from 'react-icons/cg';
 import { Form, NavLink } from 'remix';
-import { BaseUser } from '~/utils/services/auth.service';
+import { User } from '~/utils/models/User';
 
 type CmsNavType = {
   logoutFn: (e: any) => void;
-  user: BaseUser;
+  user: User;
 }
 
 const CmsNav = ({ logoutFn, user }: CmsNavType): JSX.Element => {
@@ -17,6 +17,7 @@ const CmsNav = ({ logoutFn, user }: CmsNavType): JSX.Element => {
           className={({ isActive }: { isActive: boolean }) =>
             isActive ? 'active' : ''
           }
+          title="Our Posts"
         >
           <CgFileDocument />
           Our Posts
@@ -26,14 +27,21 @@ const CmsNav = ({ logoutFn, user }: CmsNavType): JSX.Element => {
           className={({ isActive }: { isActive: boolean }) =>
             isActive ? 'active' : ''
           }
+          title="Our Users"
         >
           <CgUserList />
           Our Users
         </NavLink>
-        <a href="#" title="Our Categories">
+        <NavLink
+          to="/categories"
+          className={({ isActive }: { isActive: boolean }) =>
+            isActive ? 'active' : ''
+          }
+          title="Our Categories"
+        >
           <CgList />
           Our Categories
-        </a>
+        </NavLink>
       </nav>
       <Form method="post">
         <button type="submit" className="logout" onClick={logoutFn}>Logout</button>

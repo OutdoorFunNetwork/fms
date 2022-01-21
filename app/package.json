@@ -5,6 +5,7 @@
   "license": "",
   "scripts": {
     "build": "remix build",
+    "build:sass": "sass app/sass:app --style=compressed",
     "dev": "concurrently \"npm run start:sass\" \"npm run start:server\" \"npm run start:app\"",
     "postinstall": "remix setup node",
     "start": "cross-env NODE_ENV=production node server/index.js",
