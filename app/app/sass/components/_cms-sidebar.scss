@@ -8,7 +8,23 @@
   display: flex;
   flex-direction: column;
 
-  &:after, &:before {
+  &--top {
+    display: flex;
+    position: relative;
+    top: -(pxToEm(40));
+    left: -40px;
+    height: auto;
+    width: 120%;
+    justify-content: center;
+    align-items: center;
+    padding: pxToEm(20) 0;
+
+    img {
+      width: 80px;
+    }
+  }
+
+  &:after, &--top:before {
     content: '';
     position: absolute;
     bottom: 0;
@@ -31,7 +47,8 @@
     z-index: -1;
   }
 
-  &:before {
+  &--top:before {
+    height: 100%;
     top: 0;
     left: -15px;
     bottom: auto;

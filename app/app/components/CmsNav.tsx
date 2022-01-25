@@ -1,6 +1,10 @@
+import React from 'react';
+
 import { CgFileDocument, CgUserList, CgList } from 'react-icons/cg';
 import { Form, NavLink } from 'remix';
 import { User } from '~/utils/models/User';
+
+import OFNLogo from '../images/logo.svg';
 
 type CmsNavType = {
   logoutFn: (e: any) => void;
@@ -10,6 +14,9 @@ type CmsNavType = {
 const CmsNav = ({ logoutFn, user }: CmsNavType): JSX.Element => {
   return (
     <aside className="cms-sidebar">
+      <span className="cms-sidebar--top">
+        <img src={OFNLogo} alt="Outdoor Fun Network" />
+      </span>
       <span className="user-info">Welcome, {user.displayName}</span>
       <nav className="cms-nav">
         <NavLink

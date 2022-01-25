@@ -9,7 +9,7 @@ body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   width: 100%;
-  font-size: "16px";
+  font-size: 16px;
   line-height: 1;
   height: 100%;
 }
@@ -209,7 +209,21 @@ h2 {
   display: flex;
   flex-direction: column;
 }
-.cms-sidebar:after, .cms-sidebar:before {
+.cms-sidebar--top {
+  display: flex;
+  position: relative;
+  top: -2.5em;
+  left: -40px;
+  height: auto;
+  width: 120%;
+  justify-content: center;
+  align-items: center;
+  padding: 1.25em 0;
+}
+.cms-sidebar--top img {
+  width: 80px;
+}
+.cms-sidebar:after, .cms-sidebar--top:before {
   content: "";
   position: absolute;
   bottom: 0;
@@ -220,7 +234,8 @@ h2 {
   background: linear-gradient(to right, #52d9f4 0%, #52d9f4 10%, #19ccf0 10%, #19ccf0 15%, #0db2d3 15%, #0db2d3 75%, #0a8aa3 75%, #0a8aa3 80%, #09758b 80%, #09758b 85%);
   z-index: -1;
 }
-.cms-sidebar:before {
+.cms-sidebar--top:before {
+  height: 100%;
   top: 0;
   left: -15px;
   bottom: auto;

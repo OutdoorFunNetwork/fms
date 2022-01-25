@@ -1,10 +1,9 @@
 import { FC } from 'react';
+import { User } from '~/utils/models/User';
 import CmsNav from './CmsNav';
 
-import { BaseUser } from '~/utils/services/auth.service';
-
 type Props = {
-  user: BaseUser;
+  user: User;
   children?: any;
 };
 
