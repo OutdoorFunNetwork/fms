@@ -4,8 +4,13 @@ const compression = require("compression");
 const morgan = require("morgan");
 const { createRequestHandler } = require("@remix-run/express");
 
+const cors = require('cors');
+const dotenv = require('dotenv');
+
 const MODE = process.env.NODE_ENV;
 const BUILD_DIR = path.join(process.cwd(), "server/build");
+
+dotenv.config();
 
 const app = express();
 app.use(compression());
@@ -15,6 +20,11 @@ app.use(express.static("public", { maxAge: "1h" }));
 
 // Remix fingerprints its assets so we can cache forever
 app.use(express.static("public/build", { immutable: true, maxAge: "1y" }));
+
+console.log(process.env.ORIGINS);
+app.use(cors({
+  origin: process.env.ORIGINS,
+}));
 
 app.use(morgan("tiny"));
 app.all(
