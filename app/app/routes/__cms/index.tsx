@@ -1,11 +1,12 @@
 import { FC } from 'react';
 import { LoaderFunction, useLoaderData, Link, MetaFunction } from 'remix';
+import { Pagination } from '~/utils/models/Pagination';
 import { Post } from '~/utils/models/Post';
 import { findAll as findAllPosts } from '~/utils/services/posts.service';
 
 type PostList = {
-  count: number;
-  posts: Post[];
+  pagination: Pagination;
+  data: Post[];
 }
 
 export const loader: LoaderFunction = async () => {
@@ -19,13 +20,14 @@ export const meta: MetaFunction = ({ parentsData }) => {
 };
 
 const Index: FC = () => {
-  const data: PostList = useLoaderData();
+  const row: PostList = useLoaderData();
+  console.log(row);
   return (
     <>
       <h1>Our Posts</h1>
       <ul>
         {
-          data.posts.map((p: Post) => (
+          row.data.map((p: Post) => (
             <li key={p.id}>
               <Link to={p.slug}>{p.title}</Link>
             </li>

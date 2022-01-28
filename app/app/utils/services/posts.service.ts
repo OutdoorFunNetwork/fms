@@ -1,6 +1,7 @@
 // import ValidationError from '../_core/errors/ValidationError';
-import { pool } from '../db.server';
+import { pg, pool } from '../db.server';
 import ValidationError from '../errors/ValidationError';
+import { Pagination } from '../models/Pagination';
 import { Post } from '../models/Post';
 
 const POST_BASE_QUERY = `
@@ -29,18 +30,37 @@ FROM posts p
 export const findAll = async (
   page: number = 1,
   size: number = 10
-): Promise<{ posts: Post[], count: number }> => {
-  const { rows, rowCount } = await pool.query(`
-    ${POST_BASE_QUERY}
-    WHERE published_at IS NOT NULL
-    ORDER BY published_at
-    LIMIT $2
-    OFFSET ($1 - 1) * $2
-    `, [page, size]
-  );
+): Promise<any> => {
+  const rows =  (
+    await pg
+      .select('*')
+      .from<{ data: Post[], pagination: Pagination }>('posts')
+      .join('user_info', function () {
+        this.on('posts.author_id', '=', 'user_info.id');
+      })
+      .paginate({ perPage: size, currentPage: page })
+  )
 
-
-  return { posts: rows, count: rowCount };
+  return {
+    data: rows.data.map((result: any) => {
+      return {
+        id: result.id,
+        slug: result.slug,
+        title: result.title,
+        body: result.body,
+        published_at: result.published_at,
+        author: {
+          id: result.author_id,
+          displayName: result.display_name,
+          location: result.location,
+          avatar: result.avatar,
+          bio: result.bio,
+          primaryActivity: result.primary_activity
+        }
+      };
+    }),
+    pagination: rows.pagination,
+  }
 };
 export const findById = async (id: number, published=true): Promise<Post> => {
   const { rows } = await pool.query(`${POST_BASE_QUERY}  WHERE p.id = $1 ${ published ? 'AND published_at IS NOT NULL' : ''}`, [id]);
