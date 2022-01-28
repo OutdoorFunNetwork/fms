@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { LoaderFunction, MetaFunction, useLoaderData } from 'remix';
+import { Pagination } from '~/utils/models/Pagination';
 import { User } from '~/utils/models/User';
 import UserService from '~/utils/services/user.service';
 
@@ -10,13 +11,13 @@ export const loader: LoaderFunction = async () => {
 export const meta: MetaFunction = ({ parentsData }) => ({ title: `Our Users | ${parentsData.root.baseTitle}` });
 
 const Users: FC = () => {
-  const data: { users: User[], count: number } = useLoaderData();
+  const record: { data: User[], pagination: Pagination } = useLoaderData();
   return (
     <>
       <h1>Users</h1>
       <ul>
         {
-          data.users.map(u => (
+          record.data.map(u => (
             <li key={u.id}>{u.displayName}</li>
           ))
         }

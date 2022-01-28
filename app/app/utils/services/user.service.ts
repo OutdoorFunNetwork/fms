@@ -1,14 +1,24 @@
-import { pool } from '../db.server';
+import { pg } from '../db.server';
+import { Pagination } from '../models/Pagination';
 import { User } from '../models/User';
+// attachPaginate();
 
 class UserService {
-  async list(): Promise<{ users: User[], count: number }> {
-    const { rows, rowCount } = await pool.query(`${this.baseQuery}`);
-
-    return {
-      users: rows,
-      count: rowCount,
-    };
+  async list(): Promise<any> {
+    return await pg<{ data: User[], pagination: Pagination }>('users')
+      .join('user_info', 'users.id', '=', 'user_info.id')
+      .columns(
+        'users.id',
+        'users.email',
+        { displayName: 'user_info.display_name' },
+        'user_info.location',
+        'user_info.avatar',
+        'user_info.bio',
+        { primaryActivity: 'user_info.primary_activity' },
+    ).paginate({
+      perPage: 10,
+      currentPage: 1
+    });
   }
 
   get baseQuery(): string {
