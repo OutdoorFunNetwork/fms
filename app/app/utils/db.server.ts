@@ -1,7 +1,6 @@
 import { Pool } from 'pg';
 
 import knex from 'knex';
-import { attachPaginate } from 'knex-paginate';
 
 import * as dotenv from 'dotenv';
 

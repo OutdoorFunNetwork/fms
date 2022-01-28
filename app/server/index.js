@@ -10,6 +10,11 @@ const dotenv = require('dotenv');
 const MODE = process.env.NODE_ENV;
 const BUILD_DIR = path.join(process.cwd(), "server/build");
 
+
+const { attachPaginate } = require('knex-paginate');
+
+attachPaginate();
+
 dotenv.config();
 
 const app = express();

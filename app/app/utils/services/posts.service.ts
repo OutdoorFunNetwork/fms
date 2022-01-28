@@ -33,7 +33,7 @@ export const findAll = async (
 ): Promise<any> => {
   const rows =  (
     await pg
-      .select('*')
+      .select('*', pg.raw("ARRAY (SELECT json_build_object('id', c.id, 'name', c.name) FROM posts_categories pc JOIN categories c on c.id = pc.category_id WHERE pc.post_id = posts.id) as categories"))
       .from<{ data: Post[], pagination: Pagination }>('posts')
       .join('user_info', function () {
         this.on('posts.author_id', '=', 'user_info.id');
@@ -56,7 +56,8 @@ export const findAll = async (
           avatar: result.avatar,
           bio: result.bio,
           primaryActivity: result.primary_activity
-        }
+        },
+        categories: result.categories,
       };
     }),
     pagination: rows.pagination,
