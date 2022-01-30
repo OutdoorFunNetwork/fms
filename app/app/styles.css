@@ -270,3 +270,35 @@ h2 {
 .cms-nav a:hover svg, .cms-nav a.active svg {
   fill: #0db2d3;
 }
+
+.toastr {
+  position: absolute;
+  bottom: 20px;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.toastr .toast {
+  background: green;
+  color: #fff;
+  padding: 10px;
+}
+
+.example-enter {
+  opacity: 0.01;
+}
+
+.example-enter.example-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.example-exit {
+  opacity: 1;
+}
+
+.example-exit.example-exit-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}

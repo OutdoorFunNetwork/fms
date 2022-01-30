@@ -1,7 +1,9 @@
-import { FC } from 'react';
-import { ActionFunction, LoaderFunction, Outlet, redirect, useLoaderData } from 'remix';
+import { FC, useState } from 'react';
+import { LoaderFunction, Outlet, redirect, useLoaderData } from 'remix';
 import CmsLayout from '~/components/CmsLayout';
-import { destroySession, getSession, hasSession } from '~/utils/session.server';
+import Toastr from '~/components/Toastr/Toastr';
+import useToastContext from '~/hooks/useToast';
+import { hasSession } from '~/utils/session.server';
 
 export const loader: LoaderFunction = async ({ request }) => {
   let user;
@@ -15,10 +17,13 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 const cms: FC = () => {
+  const [open, setOpen] = useState<boolean>(false);
+  const addToast: any = useToastContext();
   const user = useLoaderData();
 
   return (
     <CmsLayout user={user}>
+      <button onClick={() => addToast({ title: 'Test', message: 'hello', type: 'success' })}>Open Toast</button>
       <Outlet context={user} />
     </CmsLayout>
   )

@@ -10,6 +10,7 @@ import {
 import type { MetaFunction } from "remix";
 
 import styles from '~/styles.css';
+import { ToastContextProvider } from "./context/Toast";
 
 export const loader: LoaderFunction = () => ({
   baseTitle: 'Fun Management System'
@@ -37,7 +38,9 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Outlet />
+        <ToastContextProvider>
+          <Outlet />
+        </ToastContextProvider>
         <ScrollRestoration />
         <Scripts />
         {process.env.NODE_ENV === "development" && <LiveReload />}
