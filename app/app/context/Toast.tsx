@@ -14,7 +14,6 @@ export const ToastContextProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (toasts.length > 0) {
-      console.log(toasts);
       const timer = setTimeout(() => setToasts(t => t.slice(1)), 3000);
 
       return () => clearTimeout(timer);

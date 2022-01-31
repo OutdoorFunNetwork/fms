@@ -21,7 +21,6 @@ export const meta: MetaFunction = ({ parentsData }) => {
 
 const Index: FC = () => {
   const row: PostList = useLoaderData();
-  console.log(row);
   return (
     <>
       <h1>Our Posts</h1>
@@ -29,7 +28,7 @@ const Index: FC = () => {
         {
           row.data.map((p: Post) => (
             <li key={p.id}>
-              <Link to={p.slug}>{p.title}</Link>
+              <Link to={'/posts/' + p.id}>{p.title}</Link>
             </li>
           ))
         }
