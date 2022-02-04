@@ -1,0 +1,19 @@
+.postForm {
+  flex: 1;
+  border-right: solid 2px rgba($black, 0.1);
+  padding-right: pxToEm(20);
+
+  &__title {
+    padding: 20px;
+    font-size: pxToEm(20);
+    margin-bottom: pxToEm(20);
+  }
+  &__body {
+    padding: pxToEm(20);
+    min-height: pxToEm(500);
+    background-color: white;
+    letter-spacing: pxToEm(1.4);
+    border-radius: pxToEm($border-radius);
+  }
+  padding-bottom: pxToEm(20);
+}

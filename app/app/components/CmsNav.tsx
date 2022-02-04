@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { CgFileDocument, CgUserList, CgList } from 'react-icons/cg';
-import { Form, NavLink } from 'remix';
+import { Form, NavLink, useLocation } from 'remix';
 import { User } from '~/utils/models/User';
 
 import OFNLogo from '../images/logo.svg';
@@ -12,6 +12,9 @@ type CmsNavType = {
 }
 
 const CmsNav = ({ logoutFn, user }: CmsNavType): JSX.Element => {
+  const location = useLocation();
+
+  console.log(location);
   return (
     <aside className="cms-sidebar">
       <span className="cms-sidebar--top">
@@ -22,7 +25,7 @@ const CmsNav = ({ logoutFn, user }: CmsNavType): JSX.Element => {
         <NavLink
           to="/"
           className={({ isActive }: { isActive: boolean }) =>
-            isActive ? 'active' : ''
+            isActive || location.pathname.includes('posts') ? 'active' : ''
           }
           title="Our Posts"
         >
