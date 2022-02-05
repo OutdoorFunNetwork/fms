@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { User } from '~/utils/models/User';
 import CmsNav from './CmsNav';
+import Modal from './Modal/Modal';
 
 type Props = {
   user: User;

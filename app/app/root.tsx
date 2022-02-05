@@ -41,6 +41,7 @@ export default function App() {
         <ToastContextProvider>
           <Outlet />
         </ToastContextProvider>
+        <div id="modal-portal"></div>
         <ScrollRestoration />
         <Scripts />
         {process.env.NODE_ENV === "development" && <LiveReload />}

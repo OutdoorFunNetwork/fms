@@ -6,4 +6,5 @@ export type User = {
   avatar: string;
   bio: string;
   primaryActivity: string;
+  password: string;
 }
