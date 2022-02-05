@@ -1,5 +1,5 @@
 import { FC, ReactChildren, useState } from 'react';
-import { createEditor, Selection } from 'slate';
+import { createEditor } from 'slate';
 import { Slate, Editable, withReact } from 'slate-react';
 
 type MarkdnType = {
@@ -27,7 +27,6 @@ const Markdwn: FC<MarkdnType> = ({ body }) => {
     if (e.key === 'Tab') {
       e.preventDefault();
       editor.insertText('    ');
-      console.log(Selection);
     }
   };
 
