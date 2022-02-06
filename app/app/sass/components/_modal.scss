@@ -11,10 +11,12 @@
 
   &--body {
     width: 50%;
-    padding: 20px;
+    padding: pxToEm(20);
     background: #fff;
     z-index: 1;
     border-radius: pxToEm($border-radius);
+    padding-top: pxToEm(30);
+    position: relative;
   }
 
   &--backdrop {
@@ -25,5 +27,29 @@
     height: 100%;
     z-index: -1;
     background: rgba(0,0,0,0.2);
+  }
+
+  &--close {
+    padding: 0;
+    width: auto;
+    line-height: 1;
+    background: transparent;
+    color: $black;
+    position: absolute;
+    top: pxToEm(10);
+    right: pxToEm(10);
+
+    &:hover {
+      color: $red;
+      background: transparent;
+    }
+
+    &:after {
+      display: none;
+    }
+  }
+
+  button:not(.modalContainer--close) {
+    margin-top: pxToEm(20);
   }
 }

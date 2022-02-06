@@ -346,10 +346,12 @@ h2 {
 }
 .modalContainer--body {
   width: 50%;
-  padding: 20px;
+  padding: 1.25em;
   background: #fff;
   z-index: 1;
   border-radius: 0.3125em;
+  padding-top: 1.875em;
+  position: relative;
 }
 .modalContainer--backdrop {
   position: absolute;
@@ -359,4 +361,24 @@ h2 {
   height: 100%;
   z-index: -1;
   background: rgba(0, 0, 0, 0.2);
+}
+.modalContainer--close {
+  padding: 0;
+  width: auto;
+  line-height: 1;
+  background: transparent;
+  color: #021418;
+  position: absolute;
+  top: 0.625em;
+  right: 0.625em;
+}
+.modalContainer--close:hover {
+  color: #ff2200;
+  background: transparent;
+}
+.modalContainer--close:after {
+  display: none;
+}
+.modalContainer button:not(.modalContainer--close) {
+  margin-top: 1.25em;
 }

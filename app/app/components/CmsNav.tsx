@@ -14,7 +14,6 @@ type CmsNavType = {
 const CmsNav = ({ logoutFn, user }: CmsNavType): JSX.Element => {
   const location = useLocation();
 
-  console.log(location);
   return (
     <aside className="cms-sidebar">
       <span className="cms-sidebar--top">

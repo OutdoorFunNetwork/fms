@@ -1,5 +1,6 @@
 import { ReactNode, FC } from 'react';
 import { createPortal } from 'react-dom';
+import { CgCloseR } from 'react-icons/cg';
 
 type ModalProps = {
   isOpen: boolean;
@@ -13,8 +14,10 @@ const Modal: FC<ModalProps> = ({ isOpen, close, children }) => {
   return createPortal(
     <div className="modalContainer">
       <div className="modalContainer--body">
-        Test
-        <button type="submit" onClick={close}>close</button>
+        {children}
+        <button type="submit" onClick={close} className="modalContainer--close">
+          <CgCloseR />
+        </button>
       </div>
       <div className="modalContainer--backdrop"></div>
     </div>
