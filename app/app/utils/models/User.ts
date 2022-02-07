@@ -7,4 +7,5 @@ export type User = {
   bio: string;
   primaryActivity: string;
   password: string;
+  token: string;
 }

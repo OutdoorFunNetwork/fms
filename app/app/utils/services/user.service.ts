@@ -6,23 +6,6 @@ import * as crypto from 'crypto';
 // attachPaginate();
 
 class UserService {
-  async list(): Promise<any> {
-    return await pg<{ data: User[], pagination: Pagination }>('users')
-      .join('user_info', 'users.id', '=', 'user_info.id')
-      .columns(
-        'users.id',
-        'users.email',
-        { displayName: 'user_info.display_name' },
-        'user_info.location',
-        'user_info.avatar',
-        'user_info.bio',
-        { primaryActivity: 'user_info.primary_activity' },
-    ).paginate({
-      perPage: 10,
-      currentPage: 1
-    });
-  }
-
   get baseQuery(): string {
     return `SELECT
       u.id,
@@ -41,59 +24,93 @@ class UserService {
     ON
       ui.user_id=u.id`;
   }
-  
+
   USER_QUERY = `
     SELECT
       id, email
     FROM
       users
   `;
+
+  async list(): Promise<any> {
+    return await pg<{ data: User[], pagination: Pagination }>('users')
+      .join('user_info', 'users.id', '=', 'user_info.id')
+      .columns(
+        'users.id',
+        'users.email',
+        { displayName: 'user_info.display_name' },
+        'user_info.location',
+        'user_info.avatar',
+        'user_info.bio',
+        { primaryActivity: 'user_info.primary_activity' },
+    ).paginate({
+      perPage: 10,
+      currentPage: 1
+    });
+  }
+
   async getUserById (id: number, verifyExisting = false): Promise<User> {
     const user = await pool.query(`${this.USER_QUERY} WHERE id=$1 LIMIT 1`, [id]);
-  
+
     if (user.rowCount < 1 && verifyExisting) {
       throw new Error('We\'re having trouble.');
     }
-  
+
     return user.rows[0];
   };
-  
+
   async getUserByEmail (email: string, verifyExisting = false): Promise<User> {
-    const user = await pool.query(`${this.USER_QUERY} WHERE email=$1 LIMIT 1`, [email]);
-  
-    if (user.rowCount < 1 && verifyExisting) {
+    // const user = await pool.query(`${this.USER_QUERY} WHERE email=$1 LIMIT 1`, [email]);
+    const user = await pg<User | undefined>('users').select('*').where('email', email).first();
+
+    if (user != null && verifyExisting) {
       throw new Error('We\'re having trouble.');
     }
-  
-    return user.rows[0];
+
+    return user;
   };
-  
-  async StartCreateUser (email: string): Promise<User> {
+
+  async StartCreateUser (email: string): Promise<Partial<User>> {
     const existingUser = await this.getUserByEmail(email);
-  
+
     if (existingUser) {
       throw new ValidationError('Email already exists!');
     }
-  
+
     const randoToken = crypto.randomBytes(48).toString('hex').slice(0, 48);
-  
-    const { rows } = await pool.query('INSERT INTO users(email) VALUES ($1) RETURNING email, id', [email]);
+
+    // const { rows } = await pool.query('INSERT INTO users(email) VALUES ($1) RETURNING email, id', [email]);
+    const user: Partial<User[]> = await pg('users').insert({
+      email,
+    }, ['id', 'email']);
+    await pg('user_info').insert({
+      user_id: user[0]?.id
+    });
+
     // eslint-disable-next-line quotes
-    const token = await pool.query(`INSERT INTO user_tokens(token, user_id, expires_at) VALUES($1, $2, NOW() + interval '1 hour') RETURNING token`, [randoToken, rows[0].id]);
-  
-    return { ...token.rows[0], ...rows[0] };
+    // const token = await pool.query(`INSERT INTO user_tokens(token, user_id, expires_at) VALUES($1, $2, NOW() + interval '1 hour') RETURNING token`, [randoToken, rows[0].id]);
+    const expiration = new Date();
+    expiration.setHours(expiration.getHours() + 1);
+
+    const token: any[] = await pg('user_tokens').insert({
+      token: randoToken,
+      user_id: user[0]?.id,
+      expires_at: expiration
+    });
+
+    return { token: token[0], ...user[0] };
   };
-  
+
   async VerifyToken (id: number, token: string): Promise<boolean> {
     const tokenQ = await pool.query('SELECT token FROM user_tokens WHERE user_id=$1 AND token=$2 AND expires_at > NOW()', [id, token]);
-  
+
     if (tokenQ.rowCount < 1) {
       throw new ValidationError('The token used is expired or invalid.');
     }
-  
+
     return tokenQ.rowCount > 0;
   };
-  
+
   async FinishUser (id: number, user: User): Promise<User> {
     let newUser;
     try {
@@ -107,10 +124,10 @@ class UserService {
     } catch (e) {
       throw new Error('Something went wrong.');
     }
-  
+
     return newUser.rows[0];
   };
-  
+
   async UpdateUserInfo (userId: number, user: User): Promise<void> {
     const { rows } = await pool.query(`
       UPDATE user_info
@@ -123,10 +140,10 @@ class UserService {
         user_id=$5
       RETURNING *
     `, [user.displayName, user.bio, user.location, user.primaryActivity, userId]);
-  
+
     return rows[0];
   };
-  
+
 }
 
 export default new UserService();
