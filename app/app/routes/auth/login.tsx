@@ -6,7 +6,7 @@ import { Login as TryLogin } from '~/utils/services/auth.service';
 export const loader: LoaderFunction = async ({ request }) => {
   const session = await getSession(request.headers.get('Cookie'));
 
-  if (session.has('userId')) {
+  if (session.has('user')) {
     return redirect('/');
   }
 

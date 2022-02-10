@@ -4,6 +4,11 @@
   padding: pxToEm($padding);
   border-radius: pxToEm($border-radius);
 
+  hr {
+    border-color: rgba($blue, 0.2);
+    margin-bottom: pxToEm($margin);
+  }
+
   form > div {
     &:not(:last-of-type) {
       margin-bottom: pxToEm($margin);

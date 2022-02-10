@@ -1,4 +1,4 @@
-import { ReactNode, FC } from 'react';
+import { ReactNode, FC, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { CgCloseR } from 'react-icons/cg';
 
@@ -10,6 +10,21 @@ type ModalProps = {
 
 const Modal: FC<ModalProps> = ({ isOpen, close, children }) => {
   if (!isOpen) return null;
+
+  const handleKeydown = (e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      close(e);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeydown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeydown);
+    }
+  }, []);
 
   return createPortal(
     <div className="modalContainer">

@@ -22,6 +22,7 @@ export const links = (): { rel: string; href: string }[] => {
   return [{ rel: 'stylesheet', href: styles }];
 }
 
+
 export default function App() {
   return (
     <html lang="en">

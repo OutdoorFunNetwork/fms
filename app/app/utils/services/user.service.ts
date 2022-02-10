@@ -1,8 +1,7 @@
-import { pg, pool } from '../db.server';
+import { pg } from '../db.server';
 import ValidationError from '../errors/ValidationError';
 import { Pagination } from '../models/Pagination';
 import { User } from '../models/User';
-import * as crypto from 'crypto';
 // attachPaginate();
 
 class UserService {
@@ -34,7 +33,7 @@ class UserService {
 
   async list(): Promise<any> {
     return await pg<{ data: User[], pagination: Pagination }>('users')
-      .join('user_info', 'users.id', '=', 'user_info.id')
+      .join('user_info', 'users.id', '=', 'user_info.user_id')
       .columns(
         'users.id',
         'users.email',
@@ -43,25 +42,14 @@ class UserService {
         'user_info.avatar',
         'user_info.bio',
         { primaryActivity: 'user_info.primary_activity' },
-    ).paginate({
+    ).orderBy('users.created_at', 'desc').paginate({
       perPage: 10,
       currentPage: 1
     });
   }
 
-  async getUserById (id: number, verifyExisting = false): Promise<User> {
-    const user = await pool.query(`${this.USER_QUERY} WHERE id=$1 LIMIT 1`, [id]);
-
-    if (user.rowCount < 1 && verifyExisting) {
-      throw new Error('We\'re having trouble.');
-    }
-
-    return user.rows[0];
-  };
-
   async getUserByEmail (email: string, verifyExisting = false): Promise<User> {
-    // const user = await pool.query(`${this.USER_QUERY} WHERE email=$1 LIMIT 1`, [email]);
-    const user = await pg<User | undefined>('users').select('*').where('email', email).first();
+    const user = await pg<User | undefined>('users').select('*').where('email', email).andWhere('active', false).first();
 
     if (user != null && verifyExisting) {
       throw new Error('We\'re having trouble.');
@@ -77,9 +65,8 @@ class UserService {
       throw new ValidationError('Email already exists!');
     }
 
-    const randoToken = crypto.randomBytes(48).toString('hex').slice(0, 48);
+    const randoToken = this.randomToken;
 
-    // const { rows } = await pool.query('INSERT INTO users(email) VALUES ($1) RETURNING email, id', [email]);
     const user: Partial<User[]> = await pg('users').insert({
       email,
     }, ['id', 'email']);
@@ -96,53 +83,80 @@ class UserService {
       token: randoToken,
       user_id: user[0]?.id,
       expires_at: expiration
-    });
+    }, ['token']);
 
-    return { token: token[0], ...user[0] };
+    return { token: token[0].token, ...user[0] };
   };
 
   async VerifyToken (id: number, token: string): Promise<boolean> {
-    const tokenQ = await pool.query('SELECT token FROM user_tokens WHERE user_id=$1 AND token=$2 AND expires_at > NOW()', [id, token]);
+    // const tokenQ = await pool.query('SELECT token FROM user_tokens WHERE user_id=$1 AND token=$2 AND expires_at > NOW()', [id, token]);
+    const t = await pg<{ token: string }>('user_tokens')
+      .select('token')
+      .where('user_id', id)
+      .andWhere('token', token)
+      .andWhere('expires_at', '>', new Date())
+      .first();
 
-    if (tokenQ.rowCount < 1) {
-      throw new ValidationError('The token used is expired or invalid.');
+    if (t == null) {
+      throw new Response('The token used is expired or invalid.', { status: 404 });
     }
 
-    return tokenQ.rowCount > 0;
+    return true;
   };
 
   async FinishUser (id: number, user: User): Promise<User> {
     let newUser;
     try {
-      newUser = await pool.query(`
-        INSERT INTO
-          user_info(user_id, display_name, location, avatar, bio, primary_activity)
-        VALUES($1, $2, $3, $4, $5, $6) RETURNING *
-      `, [id, user.displayName, user.location, user.avatar, user.bio, user.primaryActivity]);
-      await pool.query('UPDATE users SET active=$1, password=crypt($2, gen_salt(\'bf\')) WHERE id=$3', [true, user.password, newUser.rows[0].id]);
-      await pool.query('DELETE FROM user_tokens WHERE user_id=$1', [newUser.rows[0].id]);
+      newUser = await pg('user_info')
+        .where('user_id', id)
+        .update({
+          display_name: user.displayName,
+          location: user.location,
+          bio: user.bio,
+          primary_activity: user.primaryActivity,
+        }).returning<User>('*');
+      // newUser = await pool.query(`
+      //   INSERT INTO
+      //     user_info(user_id, display_name, location, avatar, bio, primary_activity)
+      //   VALUES($1, $2, $3, $4, $5, $6) RETURNING *
+      // `, [id, user.displayName, user.location, user.avatar, user.bio, user.primaryActivity]);
+      // await pool.query('UPDATE users SET active=$1, password=crypt($2, gen_salt(\'bf\')) WHERE id=$3', [true, user.password, newUser.rows[0].id]);
+      // await pool.query('DELETE FROM user_tokens WHERE user_id=$1', [newUser.rows[0].id]);
+      await pg('users')
+        .where('id', id)
+        .update({
+          active: true,
+          password: pg.raw('crypt(?, gen_salt(\'bf\'))', [user.password])
+        });
+      await pg('user_tokens')
+        .where('user_id', id)
+        .delete();
     } catch (e) {
       throw new Error('Something went wrong.');
     }
 
-    return newUser.rows[0];
+    return newUser;
   };
 
-  async UpdateUserInfo (userId: number, user: User): Promise<void> {
-    const { rows } = await pool.query(`
-      UPDATE user_info
-      SET
-        display_name=COALESCE($1, display_name),
-        bio=COALESCE($2, bio),
-        location=COALESCE($3, location),
-        primary_activity=COALESCE($4, primary_activity)
-      WHERE
-        user_id=$5
-      RETURNING *
-    `, [user.displayName, user.bio, user.location, user.primaryActivity, userId]);
+  // async UpdateUserInfo (userId: number, user: User): Promise<void> {
+  //   const { rows } = await pool.query(`
+  //     UPDATE user_info
+  //     SET
+  //       display_name=COALESCE($1, display_name),
+  //       bio=COALESCE($2, bio),
+  //       location=COALESCE($3, location),
+  //       primary_activity=COALESCE($4, primary_activity)
+  //     WHERE
+  //       user_id=$5
+  //     RETURNING *
+  //   `, [user.displayName, user.bio, user.location, user.primaryActivity, userId]);
 
-    return rows[0];
-  };
+  //   return rows[0];
+  // };
+
+  get randomToken() {
+    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  }
 
 }
 

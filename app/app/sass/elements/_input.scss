@@ -5,4 +5,20 @@ input, textarea {
   padding: pxToEm(5) pxToEm(10);
   letter-spacing: pxToEm(1.4);
   border-radius: pxToEm($border-radius);
+
+  & ~ .error--message {
+    display: block;
+    color: $red;
+    margin-top: pxToEm(7);
+    font-size: pxToEm(14);
+  }
+
+  &.alert-alert {
+    border-color: $red;
+  }
+}
+
+textarea {
+  min-height: pxToEm(200);
+  resize: vertical;
 }

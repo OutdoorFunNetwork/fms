@@ -135,6 +135,20 @@ input, textarea {
   letter-spacing: 0.0875em;
   border-radius: 0.3125em;
 }
+input ~ .error--message, textarea ~ .error--message {
+  display: block;
+  color: #ff2200;
+  margin-top: 0.4375em;
+  font-size: 0.875em;
+}
+input.alert-alert, textarea.alert-alert {
+  border-color: #ff2200;
+}
+
+textarea {
+  min-height: 12.5em;
+  resize: vertical;
+}
 
 button {
   width: 100%;
@@ -196,6 +210,10 @@ h2 {
   border: solid 1px rgba(250, 250, 250, 0.1);
   padding: 1.25em;
   border-radius: 0.3125em;
+}
+.user-form hr {
+  border-color: rgba(13, 178, 211, 0.2);
+  margin-bottom: 1.25em;
 }
 .user-form form > div:not(:last-of-type) {
   margin-bottom: 1.25em;

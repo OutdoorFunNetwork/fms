@@ -1,9 +1,20 @@
-import { FC, useState } from 'react';
-import { ActionFunction, Form, json, LoaderFunction, MetaFunction, redirect, useActionData, useLoaderData, useSubmit, useTransition } from 'remix';
-import debounce from 'lodash.debounce';
+import { FC, useEffect, useState } from 'react';
+import {
+  ActionFunction,
+  Form,
+  json,
+  LoaderFunction,
+  MetaFunction,
+  redirect,
+  useActionData,
+  useLoaderData,
+  useSubmit,
+  useTransition
+} from 'remix';
 import validator from 'validator';
 
 import Modal from '~/components/Modal/Modal';
+import UserCreateForm from '~/components/UserCreateForm';
 import SendMail from '~/utils/mail.server';
 import { Pagination } from '~/utils/models/Pagination';
 import { User } from '~/utils/models/User';
@@ -24,11 +35,11 @@ export const action: ActionFunction = async ({ request }) => {
         }, e.status);
       }
 
-      // await SendMail(
-      //   user.email!,
-      //   'Finish setting up your account!',
-      //   `Finish setting up your account with OFN by clicking <a href="http://localhost:3000/user/finish?token=${user.token}&email=${user.email}">here!</a>`,
-      // );
+      await SendMail(
+        user.email!,
+        'Finish setting up your account!',
+        `Finish setting up your account with OFN by clicking <a href="${process.env.FMS_URL}/auth/create-account?token=${user.token}&email=${user.email}">here!</a>`,
+      );
 
       // return { error: null, user };
       return redirect('/users');
@@ -37,7 +48,6 @@ export const action: ActionFunction = async ({ request }) => {
 }
 
 export const loader: LoaderFunction = async () => {
-  console.log('Called loader func');
   return await UserService.list();
 }
 
@@ -47,8 +57,6 @@ const Users: FC = () => {
   const record: { data: User[], pagination: Pagination } = useLoaderData();
 
   const [modalOpen, setModalOpen] = useState(false);
-  const [emailValid, setEmailValid] = useState(false);
-  const [errors, setErrors] = useState(null);
 
   const transition = useTransition();
   const submitFn = useSubmit();
@@ -72,29 +80,20 @@ const Users: FC = () => {
       <button type="button" onClick={() => setModalOpen(true)}>Add User</button>
       <ul>
         {
+          transition.submission && transition.submission.formData ?
+            <li>{transition.submission.formData.get('email')}</li> : null
+        }
+        {
           record.data.map(u => (
             <li key={u.id}>{u.email}</li>
           ))
-        }
-        {
-          transition.submission && transition.submission.formData ?
-            <li>{transition.submission.formData.get('email')}</li> : null
         }
       </ul>
       <Modal
         isOpen={modalOpen}
         close={handleModalClose}
       >
-        <Form method="post" onSubmit={handleInvite}>
-          <div>
-            <label htmlFor="email">Email Address:</label>
-            <input
-              type="email"
-              id="email"
-              name="email" />
-          </div>
-          <button type="submit" disabled={!emailValid}>Send Invite</button>
-        </Form>
+        <UserCreateForm handleSubmit={handleInvite} />
       </Modal>
     </>
   )
