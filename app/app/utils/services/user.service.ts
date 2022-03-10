@@ -49,7 +49,7 @@ class UserService {
   }
 
   async getUserByEmail (email: string, verifyExisting = false): Promise<User> {
-    const user = await pg<User | undefined>('users').select('*').where('email', email).andWhere('active', false).first();
+    const user = await pg<User | undefined>('users').select('*').where('email', email).first();
 
     if (user != null && verifyExisting) {
       throw new Error('We\'re having trouble.');

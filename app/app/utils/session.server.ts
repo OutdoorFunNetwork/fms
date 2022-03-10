@@ -15,6 +15,7 @@ const {
     sameSite: 'strict',
     secrets: [process.env.FMS_SECRET as string],
     path: '/',
+    expires: new Date(new Date().getTime()+(2*24*60*60*1000));
   }
 });
 
