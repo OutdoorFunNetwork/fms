@@ -47,8 +47,8 @@ export const action: ActionFunction = async ({ request }) => {
   }
 }
 
-export const loader: LoaderFunction = async () => {
-  return await UserService.list();
+export const loader: LoaderFunction = async ({ request }) => {
+  return await UserService.list(request);
 }
 
 export const meta: MetaFunction = ({ parentsData }) => ({ title: `Our Users | ${parentsData.root.baseTitle}` });

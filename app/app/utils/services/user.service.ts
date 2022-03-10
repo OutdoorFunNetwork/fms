@@ -1,3 +1,4 @@
+import { getSession, hasSession } from '~/utils/session.server';
 import { pg } from '../db.server';
 import ValidationError from '../errors/ValidationError';
 import { Pagination } from '../models/Pagination';
@@ -31,7 +32,10 @@ class UserService {
       users
   `;
 
-  async list(): Promise<any> {
+  async list(request: any): Promise<any> {
+    const session = await getSession(request.headers.get('Cookie'));
+    const { id } = session.get('user');
+
     return await pg<{ data: User[], pagination: Pagination }>('users')
       .join('user_info', 'users.id', '=', 'user_info.user_id')
       .columns(
@@ -42,7 +46,7 @@ class UserService {
         'user_info.avatar',
         'user_info.bio',
         { primaryActivity: 'user_info.primary_activity' },
-    ).orderBy('users.created_at', 'desc').paginate({
+    ).whereNot('users.id', id).orderBy('users.created_at', 'desc').paginate({
       perPage: 10,
       currentPage: 1
     });
